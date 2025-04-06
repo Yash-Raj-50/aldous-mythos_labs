@@ -46,8 +46,8 @@ function formatDate(dateString: string | Date): string {
 export async function fetchUsers(): Promise<{ data: UserListData[] }> {
   try {
     // Get MongoDB credentials from environment variables
-    const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
-    const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+    const MONGODB_USERNAME = process.env.NEXT_PUBLIC_MONGODB_USERNAME;
+    const MONGODB_PASSWORD = process.env.NEXT_PUBLIC_MONGODB_PASSWORD;
     
     if (!MONGODB_USERNAME || !MONGODB_PASSWORD) {
       throw new Error('MongoDB credentials missing in environment variables');

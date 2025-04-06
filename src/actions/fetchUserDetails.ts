@@ -77,8 +77,8 @@ function formatConversationData(conversation: any[] | undefined) {
 export async function fetchUserDetails(userID: string) {
   try {
     // Get MongoDB credentials from environment variables
-    const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
-    const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+    const MONGODB_USERNAME = process.env.NEXT_PUBLIC_MONGODB_USERNAME;
+    const MONGODB_PASSWORD = process.env.NEXT_PUBLIC_MONGODB_PASSWORD;
     
     console.log(`Attempting to connect to MongoDB for user ${userID}`); // Add this line
     
