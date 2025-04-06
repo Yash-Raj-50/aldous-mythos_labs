@@ -1,0 +1,29 @@
+{
+  "data":[
+    {
+      "userID": "USR12345678",
+      "riskLevel": "HIGH",
+      "lastActive": "05.12.2023"
+    },
+    {
+      "userID": "USR23456789",
+      "riskLevel": "MEDIUM",
+      "lastActive": "05.11.2023"
+    },
+    {
+      "userID": "USR34567890",
+      "riskLevel": "LOW",
+      "lastActive": "03.12.2023"
+    },
+    {
+      "userID": "USR45678901",
+      "riskLevel": "HIGH",
+      "lastActive": "22.12.2021"
+    },
+    {
+      "userID": "USR56789012",
+      "riskLevel": "MEDIUM",
+      "lastActive": "05.12.2023"
+    }
+  ]
+}

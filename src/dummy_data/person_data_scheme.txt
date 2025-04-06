@@ -1,0 +1,97 @@
+{
+  "userID": "[ID of the user]",
+  "lastUpdated": "[Current date in MM.DD.YYYY format]",
+  "conversationCount": [Number of conversations],
+  
+  "executiveSummary": {
+    "summary": "[A concise 2-3 sentence summary of the user's radicalization profile]",
+    "riskLevel": "[LOW/MEDIUM/MEDIUM-HIGH/HIGH]"
+  },
+  
+  "radicalizationStage": {
+    "stage": "[CURIOSITY/SYMPATHY/ACTION-SEEKING/OPERATIONAL]",
+    "evidence": [
+      {
+        "quote": "[Direct quote from user]",
+        "significance": "[Brief explanation]"
+      }
+    ],
+    "explanation": "[3 bullet points describing key characteristics of this stage]"
+  },
+  
+  "riskFactors": [
+    "[List of 3-5 key risk factors identified in the conversation]"
+  ],
+  
+  "interventionEffectiveness": {
+    "openQuestions": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]"
+    },
+    "addressingGrievances": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]",
+      "isFocus": [true/false]
+    },
+    "emotionalValidation": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]"
+    },
+    "alternativeNarratives": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]"
+    },
+    "directChallenges": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]",
+      "isAvoid": [true/false]
+    },
+    "engagementTrend": {
+      "dataPoints": [
+        {
+          "timestamp": "[MM/DD/YYYY HH:MM format]",
+          "level": "[LOW/MEDIUM/HIGH]",
+          "event": "[Brief description]"
+        }
+      ]
+    }
+  },
+  
+  "inflectionPoints": [
+    {
+      "timestamp": "[MM/DD/YYYY HH:MM format]",
+      "quote": "[Direct quote from user]",
+      "significance": "[Brief analysis]",
+      "type": "[INITIAL_INTENT/EMOTIONAL_DRIVER/JUSTIFICATION/REJECTION]"
+    }
+  ],
+  
+  "psychologicalNeeds": [
+    {
+      "need": "[JUSTICE_REVENGE/IDENTITY_BELONGING/AGENCY_POWER/PURPOSE_MEANING]",
+      "quote": "[Supporting quote]",
+      "size": "[LARGE/MEDIUM]",
+      "color": "[RED/ORANGE/BLUE/TEAL]"
+    }
+  ],
+  
+  "emotionalState": [
+    {
+      "emotion": "[ANGER/FRUSTRATION/DEFENSIVENESS/etc.]",
+      "strength": "[HIGH/MEDIUM/LOW]",
+      "underlyingDrivers": ["List of 2-3 underlying psychological drivers"]
+    }
+  ],
+  
+  "recommendedApproaches": {
+    "primaryStrategy": [
+      "[2-3 key primary strategy points]"
+    ],
+    "specificTactics": [
+      "[2-3 specific tactical approaches]"
+    ],
+    "approachesToAvoid": [
+      "[2-3 approaches to avoid]"
+    ]
+  }
+}
