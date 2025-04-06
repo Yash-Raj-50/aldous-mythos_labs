@@ -36,37 +36,45 @@ const Page = () => {
   const userID = pathname.split("/")[2];
 
   // Fetch user details when the component mounts or userID changes
-  useEffect(() => {
-    const loadUserData = async () => {
-      if (!userID) return;
+// In your useEffect:
 
-      setLoading(true);
-      setError(null);
+useEffect(() => {
+  const loadUserData = async () => {
+    if (!userID) return;
 
-      try {
-        // Fetch the user details
-        const userDetails = await fetchUserDetails(userID);
+    setLoading(true);
+    setError(null);
 
-        if (!userDetails) {
-          setError('User not found');
-          return;
-        }
+    try {
+      // Fetch the user details
+      const userDetails = await fetchUserDetails(userID);
 
-        setUserData(userDetails);
-
-        // Also fetch the users list for the dropdown
-        const { data } = await fetchUsers();
-        setUsersList(data);
-      } catch (err) {
-        console.error('Error loading user data:', err);
-        setError('Failed to load user data');
-      } finally {
-        setLoading(false);
+      // Check if userDetails is an error object
+      if (userDetails && userDetails.error === true) {
+        setError(userDetails.message || 'Failed to fetch user data');
+        return;
       }
-    };
 
-    loadUserData();
-  }, [userID]);
+      if (!userDetails) {
+        setError('User not found');
+        return;
+      }
+
+      setUserData(userDetails);
+
+      // Also fetch the users list for the dropdown
+      const { data } = await fetchUsers();
+      setUsersList(data);
+    } catch (err) {
+      console.error('Error loading user data:', err);
+      setError('Failed to load user data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadUserData();
+}, [userID]);
 
   // Function to generate PDF from the Grid component
   const handleDownloadPDF = async () => {

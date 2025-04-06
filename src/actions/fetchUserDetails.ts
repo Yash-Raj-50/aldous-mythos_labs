@@ -80,7 +80,10 @@ export async function fetchUserDetails(userID: string) {
     const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
     const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
     
+    console.log(`Attempting to connect to MongoDB for user ${userID}`); // Add this line
+    
     if (!MONGODB_USERNAME || !MONGODB_PASSWORD) {
+      console.error('MongoDB credentials missing in environment variables');
       throw new Error('MongoDB credentials missing in environment variables');
     }
     
@@ -88,54 +91,54 @@ export async function fetchUserDetails(userID: string) {
     const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@ctbot.5vx6h.mongodb.net/?retryWrites=true&w=majority&appName=CTBot`;
     const client = new MongoClient(uri);
     
-    await client.connect();
-    console.log(`Connected to MongoDB for user ${userID}`);
-    
-    const db = client.db("user-chat");
-    const collection = db.collection("users_simulated");
-    
-    // Fetch the specific user with all details
-    const user = await collection.findOne({ userID: userID });
-    
-    // Close the connection
-    await client.close();
-    
-    if (!user) {
-      console.error(`User with ID ${userID} not found`);
-      return null;
+    try {
+      await client.connect();
+      console.log(`Connected to MongoDB successfully for user ${userID}`);
+      
+      const db = client.db("user-chat");
+      const collection = db.collection("users_simulated");
+      
+      // Fetch the specific user with all details
+      const user = await collection.findOne({ userID: userID });
+      
+      if (!user) {
+        console.error(`User with ID ${userID} not found in database`);
+        return null;
+      }
+      
+      console.log(`Found user data for ${userID}`);
+      // Serialize the user object
+      const serializedUser = serializeMongoObject(user);
+      // Format the conversation data
+      serializedUser.conversation = formatConversationData(serializedUser.conversation);
+      // Format the last updated date
+      serializedUser.lastUpdated = serializedUser.lastUpdated 
+        ? new Date(serializedUser.lastUpdated).toLocaleDateString() 
+        : new Date().toLocaleDateString();
+
+      // Format the created date
+      serializedUser.created = serializedUser.created
+        ? new Date(serializedUser.created).toLocaleDateString()
+        : new Date().toLocaleDateString();
+
+      return serializedUser;
+      
+      // Rest of your function remains the same...
+    } catch (dbError: unknown) {
+      console.error(`MongoDB connection or query error: ${dbError instanceof Error ? dbError.message : String(dbError)}`);
+      throw dbError;
+    } finally {
+      await client.close();
     }
     
-    // Serialize the MongoDB object to a plain JavaScript object
-    const serializedUser = serializeMongoObject(user);
-    
-    // Ensure conversation data is properly formatted, even if missing in the original data
-    serializedUser.conversation = formatConversationData(serializedUser.conversation);
-    
-    // Ensure other expected fields exist with default values if they don't
-    const ensuredUser = {
-      userID: serializedUser.userID || userID,
-      name: serializedUser.name || `User ${userID}`,
-      riskLevel: serializedUser.riskLevel || 'MEDIUM',
-      lastActive: serializedUser.lastActive || new Date().toISOString(),
-      lastUpdated: serializedUser.lastUpdated || new Date().toISOString(),
-      conversationCount: serializedUser.conversationCount || serializedUser.conversation?.length || 0,
-      executiveSummary: serializedUser.executiveSummary || { riskLevel: 'MEDIUM', summary: 'No summary available' },
-      radicalizationStage: serializedUser.radicalizationStage || { stage: 'UNKNOWN', details: [] },
-      riskFactors: serializedUser.riskFactors || [],
-      interventionEffectiveness: serializedUser.interventionEffectiveness || { effectiveness: 'UNKNOWN' },
-      inflectionPoints: serializedUser.inflectionPoints || [],
-      psychologicalNeeds: serializedUser.psychologicalNeeds || [],
-      emotionalState: serializedUser.emotionalState || { surface: [], underlying: [] },
-      recommendedApproaches: serializedUser.recommendedApproaches || [],
-      conversation: serializedUser.conversation || [],
-      ...serializedUser // Keep any other fields not explicitly listed
-    };
-    
-    console.log(`Fetched details for user ${userID}: ${ensuredUser.conversationCount} conversations`);
-    
-    return ensuredUser;
+    // Rest of your function...
   } catch (error) {
-    console.error(`Error fetching details for user ${userID}:`, error);
-    return null;
+    console.error(`Error in fetchUserDetails for user ${userID}:`, error);
+    // Return a more informative error object instead of null
+    return { 
+      error: true, 
+      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      userID 
+    };
   }
 }
