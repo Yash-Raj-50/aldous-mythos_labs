@@ -72,7 +72,7 @@ const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
                       {point.timestamp}
                     </div>
                     <div className="text-sm font-bold mt-1">
-                      "{point.quote}"
+                    &quot;{point.quote}&quot;
                     </div>
                     <div className="text-xs mt-1 text-gray-500">
                       {point.type}

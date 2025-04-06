@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import Grid from "@/components/common/Grid";
 import Navbar from "@/components/common/Navbar";
 import EmotionalIcebergAnalysis from "@/components/dashboard/EmotionalIcebergAnalysis/EmotionalIcebergAnalysis";
@@ -15,7 +16,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@mui/material";
 import { fetchUserDetails } from "@/actions/fetchUserDetails";
 import { fetchUsers } from "@/actions/fetchUsers";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 import domtoimage from "dom-to-image-more"; // Import dom-to-image-more for better image generation
 import jsPDF from "jspdf";
 
@@ -23,9 +24,11 @@ import jsPDF from "jspdf";
 const Page = () => {
   const [activeTab, setActiveTab] = useState<'analysis' | 'chat'>('analysis');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [usersList, setUsersList] = useState<any[]>([]);
 
   const gridRef = useRef<HTMLDivElement>(null);
@@ -210,9 +213,9 @@ const Page = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-red-600">Error</h1>
           <p className="mt-2">{error || 'Failed to load user data'}</p>
-          <a href="/" className="mt-4 inline-block text-[#253A5C] hover:underline">
+          <Link href="/" className="mt-4 inline-block text-[#253A5C] hover:underline">
             Return to Dashboard
-          </a>
+          </Link>
         </div>
       </div>
     );

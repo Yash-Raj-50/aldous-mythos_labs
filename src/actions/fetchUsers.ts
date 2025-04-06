@@ -1,6 +1,6 @@
 'use server'
 
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 // Define your user data type for the list view
 export type UserListData = {

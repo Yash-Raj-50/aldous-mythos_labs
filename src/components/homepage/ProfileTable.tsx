@@ -12,7 +12,6 @@ import {
   TablePagination,
   Typography,
   TableSortLabel,
-  Box
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

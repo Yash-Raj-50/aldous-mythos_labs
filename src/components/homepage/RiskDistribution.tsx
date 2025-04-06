@@ -30,6 +30,7 @@ interface RiskDistributionProps {
 }
 
 const RiskDistribution = ({ data }: RiskDistributionProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [chartData, setChartData] = useState<any>(null);
 
   useEffect(() => {
@@ -89,6 +90,7 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
       },
       tooltip: {
         callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           label: function(context: any) {
             return `${context.formattedValue} Users`;
           }

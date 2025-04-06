@@ -59,6 +59,7 @@ export async function getCurrentUser() {
     // Invalid or expired token
     const cookieStore = await cookies();
     cookieStore.delete('auth_token');
+    console.error('Invalid token:', error);
     return null;
   }
 }

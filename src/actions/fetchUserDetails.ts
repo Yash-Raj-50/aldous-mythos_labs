@@ -3,6 +3,7 @@
 import { MongoClient } from 'mongodb';
 
 // Helper function to safely serialize MongoDB objects
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function serializeMongoObject(obj: any): any {
   if (obj === null || obj === undefined) {
     return obj;
@@ -25,6 +26,7 @@ function serializeMongoObject(obj: any): any {
   
   // Handle objects (recursively)
   if (typeof obj === 'object') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const serialized: Record<string, any> = {};
     
     for (const [key, value] of Object.entries(obj)) {
@@ -59,6 +61,7 @@ function serializeMongoObject(obj: any): any {
 }
 
 // Format conversation data for display
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function formatConversationData(conversation: any[] | undefined) {
   if (!conversation || !Array.isArray(conversation)) {
     return [];

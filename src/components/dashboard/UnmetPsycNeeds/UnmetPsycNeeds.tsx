@@ -41,7 +41,7 @@ const UnmetPsycNeeds = ({data}:UnmetPsycNeedsProps) => {
         {data.map((need, index) => (
           <div key={index} className={`${getColSpan(need.size)} ${getBgColor(need.color)} flex flex-col items-center justify-center min-h-[100px] text-white gap-2 p-2`}>
             <span className="text-sm max-w-full font-bold text-white">{need.need}</span>
-            <span className="text-xs max-w-full font-semibold text-white">"{need.quote}"</span>
+            <span className="text-xs max-w-full font-semibold text-white">&quot;{need.quote}&quot;</span>
           </div>
         ))}
       </div>

@@ -17,6 +17,7 @@ const formatTimestamp = (timestamp: string | undefined) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   } catch (e) {
+    console.error("Error formatting timestamp:", e);
     return '';
   }
 };
