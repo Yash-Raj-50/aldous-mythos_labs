@@ -32,7 +32,8 @@ interface ProfileTableProps {
 // Helper function to compare risk levels
 function getRiskLevelValue(riskLevel: string): number {
   switch(riskLevel) {
-    case "HIGH": return 3;
+    case "HIGH": return 4;
+    case "MEDIUM-HIGH": return 3;
     case "MEDIUM": return 2;
     case "LOW": return 1;
     default: return 0;
@@ -87,13 +88,16 @@ const ProfileTable = ({ data }: ProfileTableProps) => {
     let color;
     switch(riskLevel) {
       case "HIGH":
-        color = "#D45F5F"; // High
+        color = "#D45F5F"; // High (Red)
+        break;
+      case "MEDIUM-HIGH":
+        color = "#E05A3A"; // Medium-High (Reddish-Orange)
         break;
       case "MEDIUM":
-        color = "#E69244"; // Medium
+        color = "#E69244"; // Medium (Orange)
         break;
       case "LOW":
-        color = "#6DBDAD"; // Low
+        color = "#6DBDAD"; // Low (Green)
         break;
       default:
         color = "#6b7280"; // gray

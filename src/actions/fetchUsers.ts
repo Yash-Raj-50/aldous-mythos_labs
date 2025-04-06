@@ -67,7 +67,7 @@ export async function fetchUsers(): Promise<{ data: UserListData[] }> {
     const users = await collection.find({}).project({
       userID: 1,
       name: 1,
-      riskLevel: 1,
+      "executiveSummary.riskLevel": 1,
       lastActive: 1
     }).toArray();
     
@@ -78,10 +78,11 @@ export async function fetchUsers(): Promise<{ data: UserListData[] }> {
     const formattedUsers = users.map(user => ({
       userID: user.userID || (user._id ? user._id.toString() : String(Math.random()).substring(2, 8)),
       name: user.name || `User ${user.userID || ''}`,
-      riskLevel: user.riskLevel || 'MEDIUM',
+      riskLevel: user.executiveSummary?.riskLevel || 'LOW',
       lastActive: formatDate(user.lastActive || new Date())
     }));
     
+    // console.log('Formatted users for list view:', formattedUsers);
     console.log(`Fetched ${formattedUsers.length} users for list view`);
     
     return { data: formattedUsers };

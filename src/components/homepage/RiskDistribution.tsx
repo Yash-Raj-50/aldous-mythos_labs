@@ -34,9 +34,10 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
   const [chartData, setChartData] = useState<any>(null);
 
   useEffect(() => {
-    // Count risk levels
+    // Count risk levels - add MEDIUM-HIGH
     const riskCounts = {
       HIGH: 0,
+      'MEDIUM-HIGH': 0,
       MEDIUM: 0,
       LOW: 0
     };
@@ -48,20 +49,22 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
       }
     });
 
-    // Prepare the chart data
+    // Prepare the chart data - include MEDIUM-HIGH in the correct order
     setChartData({
-      labels: ['HIGH', 'MEDIUM', 'LOW'],
+      labels: ['HIGH', 'MEDIUM-HIGH', 'MEDIUM', 'LOW'],
       datasets: [
         {
           label: 'Number of Users',
-          data: [riskCounts.HIGH, riskCounts.MEDIUM, riskCounts.LOW],
+          data: [riskCounts.HIGH, riskCounts['MEDIUM-HIGH'], riskCounts.MEDIUM, riskCounts.LOW],
           backgroundColor: [
             '#D45F5F',  // Red for HIGH
+            '#E05A3A',  // Reddish-Orange for MEDIUM-HIGH
             '#E69244',  // Orange for MEDIUM
             '#6DBDAD',  // Teal for LOW
           ],
           borderColor: [
             'rgb(255, 99, 132)',
+            'rgb(224, 90, 58)',
             'rgb(255, 159, 64)',
             'rgb(75, 192, 192)',
           ],
@@ -75,11 +78,12 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
   // Find the maximum count to set the appropriate scale
   const maxCount = data ? Math.max(
     data.filter(item => item.riskLevel === 'HIGH').length,
+    data.filter(item => item.riskLevel === 'MEDIUM-HIGH').length,
     data.filter(item => item.riskLevel === 'MEDIUM').length,
     data.filter(item => item.riskLevel === 'LOW').length
   ) : 0;
 
-  // Options for the chart
+  // Options for the chart - unchanged
   const options = {
     indexAxis: 'y' as const, // Horizontal bar chart
     responsive: true,

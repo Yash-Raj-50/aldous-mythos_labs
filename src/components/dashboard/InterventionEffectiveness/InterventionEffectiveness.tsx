@@ -166,7 +166,7 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
     <div className="col-span-2 lg:col-span-4 min-h-[600px] lg:min-h-[500px] flex flex-col items-start justify-start bg-white rounded shadow-md p-4 gap-4">
       <h3 className="text-lg font-semibold">Intervention Effectiveness</h3>
       <div className="flex flex-col grow w-full items-start gap-2">
-        <div className="flex flex-col w-full items-start justify-between gap-3">
+        <div className="flex flex-col w-full items-start justify-between gap-3 mb-2">
           <h2 className="font-semibold">Response to Different Approaches:</h2>
           <div className="flex flex-row items-start gap-2 w-full text-sm font-medium">
             <span className="w-2/8 flex flex-col items-end px-4">Open Questions:</span>
@@ -262,12 +262,6 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
               {data.directChallenges.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
               {data.directChallenges.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
-          </div>
-          <div>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
           </div>
         </div>
         <div className="w-full flex flex-col items-start justify-between gap-2">
