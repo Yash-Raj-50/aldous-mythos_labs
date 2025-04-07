@@ -233,8 +233,8 @@ Conversation history to analyze:
 
 
 // Format conversation messages to match the expected input format
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 // Fix the formatConversation function to properly handle MongoDB objects
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const formatConversation = (conversationList: any[]) => {
   let formattedConversation = "";
 
@@ -263,6 +263,7 @@ const formatConversation = (conversationList: any[]) => {
           try {
             content = JSON.stringify(message.content);
           } catch (e) {
+            console.error("Error stringifying content:", e);
             content = "[Complex content]";
           }
         }
@@ -372,7 +373,7 @@ export async function updateUserAnalysis(userId: string) {
           console.log(`JSON sample (first 100 chars): ${responseText.substring(0, 100)}...`);
           
           // Parse the JSON response
-          const userData = JSON.parse(responseText);
+          // const userData = JSON.parse(responseText);
           
           // Rest of your code for processing the userData...
           
