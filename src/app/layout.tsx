@@ -16,6 +16,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Aldous | Deradicalization Console",
   description: "Aldous - A console for deradicalization",
+  icons: {
+    icon: [
+      { url: '/favicon.png' },
+      { url: '/favicon.ico' }
+    ],
+    apple: { url: '/favicon.ico' }
+  }
 };
 
 export default function RootLayout({

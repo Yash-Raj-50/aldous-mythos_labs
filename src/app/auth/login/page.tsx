@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Tooltip } from "@mui/material";
+import Logo from "../../../assests/New_Aldous_Logo.png";
+import Image from "next/image";
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -34,9 +36,16 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="bg-[#253A5C] text-white h-screen w-screen flex items-center justify-center">
+    <div className="bg-[#253A5C] text-white min-h-screen w-screen flex items-center justify-center">
       <div className="border flex flex-col md:flex-row items-center justify-center text-white p-8 md:h-1/2">
-        <div className="md:w-[30vw] text-8xl font-serif md:border-r-4 md:border-b-0 border-white p-16 h-full flex flex-col items-center justify-center border-b-4">Aldous</div>
+        <div className="md:w-[30vw] md:border-r-4 md:border-b-0 border-white h-full flex flex-col items-center justify-center border-b-4">
+          <Image 
+            src={Logo} 
+            alt="Aldous Logo" 
+            priority
+            className="object-contain h-full w-full"
+          />
+        </div>
         <div className="md:w-[30vw] p-16 h-full flex flex-col items-center justify-center gap-4">
           <h1 className="text-2xl font-bold mb-4">Login to the Console</h1>
           {error && (
