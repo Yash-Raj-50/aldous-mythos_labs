@@ -5,7 +5,7 @@ interface RadStageAssessmentProps {
       "quote": string;
       "significance": string;
     }[];
-    "explanation": string;
+    "explanation": string[];
   }
 }
 
@@ -36,8 +36,8 @@ const RadStageAssessment = ({data}:RadStageAssessmentProps) => {
         </div>
         <div className="bg-[#F8F8F8] p-4 rounded w-full flex flex-col gap-1.5">
           <div className="text-sm font-bold">{data.stage.charAt(0).toUpperCase() + data.stage.slice(1).toLowerCase()} Stage:</div>
-          {data.evidence.map((evidence, index) => (
-            <p className="text-sm font-medium " key={index}>• {evidence.significance}</p>
+          {data.explanation.map((explanation, index) => (
+            <p className="text-sm font-medium " key={index}>• {explanation}</p>
           ))}
         </div>
       </div>

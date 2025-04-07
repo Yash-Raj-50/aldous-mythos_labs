@@ -10,7 +10,7 @@ export default async function Home() {
     const peopleData = await fetchUsers();
     
     // Log data summary (not the entire data to avoid console overflow)
-    console.log(`Fetched ${peopleData.data.length} users for homepage`);
+    // console.log(`Fetched ${peopleData.data.length} users for homepage`);
     
     return (
       <div className="min-h-screen bg-[#F8F9FB]">

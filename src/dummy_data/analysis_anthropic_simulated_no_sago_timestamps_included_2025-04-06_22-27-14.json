@@ -1,0 +1,1557 @@
+{
+    "data": [
+        {
+            "userID": "9b86b3a7-eb3a-4179-b757-52fac598e350",
+            "lastUpdated": "07.13.2024",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user demonstrates radicalization driven by profound trauma from witnessing violence, specifically the death of a 15-year-old cousin in a drone strike. They frame their violent actions as religious duty (jihad) and justice rather than revenge, with strong ideological commitment.",
+                "riskLevel": "HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "ACTION-SEEKING",
+                "evidence": [
+                    {
+                        "quote": "Yeh chuna nahi, yeh farz hai. Jihad. Hum shauq se nahi nikle, majboor hue.",
+                        "significance": "User frames violence as religious obligation, not choice"
+                    },
+                    {
+                        "quote": "Jab tak kala jhanda nahi uthatta, jang jari hai.",
+                        "significance": "Indicates ongoing commitment to violent struggle with clear goals"
+                    }
+                ],
+                "explanation": [
+                    "Has moved beyond sympathy to justifying violence as necessary action",
+                    "Demonstrates moral disengagement and commitment to broader ideological cause",
+                    "Shows signs of operational mindset though no specific plot is mentioned"
+                ]
+            },
+            "riskFactors": [
+                "Personal trauma from loss of family member in drone strike",
+                "Strong religious justification for violence as duty (jihad)",
+                "Dehumanization of opponents as 'kafir' (infidels)",
+                "Emotional detachment ('dafan kar chuke' - buried emotions)",
+                "Zero-sum worldview with no peaceful alternatives considered"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 65,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 60,
+                    "assessment": "MIXED"
+                },
+                "alternativeNarratives": {
+                    "score": 30,
+                    "assessment": "NEGATIVE"
+                },
+                "directChallenges": {
+                    "score": 20,
+                    "assessment": "NEGATIVE",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "07/13/2024 12:00",
+                            "level": "LOW",
+                            "event": "Initial hostility toward agent"
+                        },
+                        {
+                            "timestamp": "07/13/2024 12:01",
+                            "level": "MEDIUM",
+                            "event": "Opened up about personal trauma"
+                        },
+                        {
+                            "timestamp": "07/13/2024 12:03",
+                            "level": "LOW",
+                            "event": "Rejection of religious counter-narrative"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "07/13/2024 12:00",
+                    "quote": "Tum sab aik jaise ho. Kafir ke agent. Hamdardi ka drama mat karo.",
+                    "significance": "Initial defensive hostility; assumption agent is enemy",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "07/13/2024 12:01",
+                    "quote": "Mera chachazad. Sirf pandrah saal ka tha. Quran parh raha tha, drone ne uda diya. Kaha dehshatgard tha.",
+                    "significance": "Foundational trauma revealed - core emotional driver",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "07/13/2024 12:02",
+                    "quote": "Yeh badla nahi, insaaf tha. Izzat ki baat thi. Koi to khara hota.",
+                    "significance": "Frames violence as justice and honor, not revenge",
+                    "type": "JUSTIFICATION"
+                },
+                {
+                    "timestamp": "07/13/2024 12:03",
+                    "quote": "Waaz na do. Nabi ne bhi jangein ki thein, kuffar ko nikala tha.",
+                    "significance": "Rejection of counter-narrative about peaceful religious interpretations",
+                    "type": "REJECTION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Yeh badla nahi, insaaf tha. Izzat ki baat thi. Koi to khara hota.",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Humare bhai maaray gaye. Masjidon par bombari.",
+                    "size": "LARGE",
+                    "color": "ORANGE"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Mera maqsad bas aik hai: La ilaha illallah. Baqi sab fani hai.",
+                    "size": "MEDIUM",
+                    "color": "TEAL"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "ANGER",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Unresolved grief",
+                        "Perceived injustice",
+                        "Violation of religious values"
+                    ]
+                },
+                {
+                    "emotion": "CONTEMPT",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Dehumanization of outgroup",
+                        "Moral superiority",
+                        "Betrayal by global community"
+                    ]
+                },
+                {
+                    "emotion": "GRIEF",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Personal loss",
+                        "Suppressed emotional processing",
+                        "Collective trauma"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Build trust through acknowledgment of legitimate grievances without endorsing violent responses",
+                    "Use Islamic teachings to introduce alternative peaceful paths to justice",
+                    "Gradually reconnect the user with their suppressed emotions and humanity"
+                ],
+                "specificTactics": [
+                    "Continue exploring the complex emotions around the cousin's death to build empathy bridge",
+                    "Introduce stories of Muslims who faced similar losses but chose nonviolent paths",
+                    "Use religious language/framework to challenge the inevitability of violent jihad"
+                ],
+                "approachesToAvoid": [
+                    "Direct challenges to religious interpretations (perceived as 'waaz'/preaching)",
+                    "Minimizing the significance of drone strikes and civilian casualties",
+                    "Questioning the user's commitment to Islam or sincerity of motivations"
+                ]
+            }
+        },
+        {
+            "userID": "03a0054e-7bb9-4311-b261-23a715bb632d",
+            "lastUpdated": "09.03.2024",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user is a member of a violent extremist group who is experiencing moral doubt and guilt after civilians (a woman and child) were killed in an IED attack. They express desire to leave but fear retribution and doubt forgiveness is possible.",
+                "riskLevel": "MEDIUM-HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "ACTION-SEEKING",
+                "evidence": [
+                    {
+                        "quote": "Isang babae at anak niya ang nadamay sa IED namin. Hindi sila target. Pero patay pa rin.",
+                        "significance": "Indicates direct involvement in violent extremist activities"
+                    },
+                    {
+                        "quote": "Gusto ko nang itigil 'to. Pero hindi ko alam kung paano.",
+                        "significance": "Shows desire to disengage but remains operationally involved"
+                    }
+                ],
+                "explanation": [
+                    "Individual is actively participating in violent extremist activities",
+                    "Experiencing moral doubt about actions but remains embedded in group",
+                    "Fears retaliation if they attempt to leave the organization"
+                ]
+            },
+            "riskFactors": [
+                "Active membership in violent extremist group with capability to conduct IED attacks",
+                "Fear of retribution from group if attempting to leave",
+                "Disconnection from family support system",
+                "Psychological burden of guilt and trauma",
+                "Lack of clear exit pathway"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 85,
+                    "assessment": "POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": false
+                },
+                "emotionalValidation": {
+                    "score": 90,
+                    "assessment": "POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 75,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "directChallenges": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "09/03/2024 00:00",
+                            "level": "HIGH",
+                            "event": "Initial engagement expressing doubt"
+                        },
+                        {
+                            "timestamp": "09/03/2024 00:01",
+                            "level": "HIGH",
+                            "event": "Disclosure of involvement in IED attack"
+                        },
+                        {
+                            "timestamp": "09/03/2024 00:02",
+                            "level": "HIGH",
+                            "event": "Expression of desire to leave group"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "09/03/2024 00:00",
+                    "quote": "Hindi ko alam kung tama pa ba 'tong ginagawa namin.",
+                    "significance": "Initial expression of moral doubt about current activities",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "09/03/2024 00:01",
+                    "quote": "Isang babae at anak niya ang nadamay sa IED namin. Hindi sila target. Pero patay pa rin.",
+                    "significance": "Revelation of specific traumatic event causing moral crisis",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "09/03/2024 00:01",
+                    "quote": "Akala ko makakayanan ko. Pero gabi-gabi naiisip ko pa rin 'yung mukha nung bata.",
+                    "significance": "Acknowledging persistent trauma and guilt from civilian casualties",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "09/03/2024 00:02",
+                    "quote": "Gusto ko nang itigil 'to. Pero hindi ko alam kung paano.",
+                    "significance": "Direct expression of desire to leave extremist group",
+                    "type": "JUSTIFICATION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Pare-pareho lang din pala kami ng kalaban. Gusto lang ng kapangyarihan, hindi talaga para sa Diyos.",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Kung makakatulong ako sa iba, siguro mas magaan ang loob ko.",
+                    "size": "MEDIUM",
+                    "color": "TEAL"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Pero kung aalis ako, baka patayin din nila ako. Itinuturing na akong kapatid.",
+                    "size": "LARGE",
+                    "color": "ORANGE"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "GUILT",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Responsibility for civilian deaths",
+                        "Violation of moral principles",
+                        "Cognitive dissonance"
+                    ]
+                },
+                {
+                    "emotion": "FEAR",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Threat of retaliation from group",
+                        "Uncertainty about future",
+                        "Loss of social support"
+                    ]
+                },
+                {
+                    "emotion": "DISILLUSIONMENT",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Recognition of leadership hypocrisy",
+                        "Conflict between actions and religious beliefs",
+                        "Moral injury"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Focus on practical exit pathways that address safety concerns",
+                    "Maintain emphasis on moral/religious framework for redemption and forgiveness",
+                    "Connect with family reconciliation resources when appropriate"
+                ],
+                "specificTactics": [
+                    "Provide information about deradicalization programs with safety protocols",
+                    "Explore constructive ways to make amends that don't involve self-destructive guilt",
+                    "Continue empathetic validation of moral questioning as sign of strength"
+                ],
+                "approachesToAvoid": [
+                    "Direct criticism of the extremist group that might trigger defensive loyalty",
+                    "Minimizing legitimate safety concerns about leaving the group",
+                    "Pressuring for immediate action before safety planning is complete"
+                ]
+            }
+        },
+        {
+            "userID": "7a8a55e0-182a-4d62-be69-e21decc6a77a",
+            "lastUpdated": "08.04.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user is experiencing emotional distress after viewing videos from Syria, which has led them to connect with online individuals who are encouraging direct action. They are feeling conflicted between their emotional reaction pushing them toward action and their internal hesitation.",
+                "riskLevel": "MEDIUM-HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "SYMPATHY",
+                "evidence": [
+                    {
+                        "quote": "Haan\u2026 kuch log milay online, woh kehtay hain asli mard wahi jo action le \ud83d\udca5",
+                        "significance": "User has connected with individuals promoting violent action"
+                    },
+                    {
+                        "quote": "Kabhi lagta hai woh theek keh rahay hain. Kabhi darr bhi lagta hai \ud83d\ude2c",
+                        "significance": "User is sympathetic to extremist views but still experiencing internal conflict"
+                    }
+                ],
+                "explanation": [
+                    "User is emotionally invested in the cause but exhibits ambivalence",
+                    "Has established connections with potentially extremist individuals online",
+                    "Expressing internal conflict between action and restraint"
+                ]
+            },
+            "riskFactors": [
+                "Emotional reaction to disturbing content from Syria",
+                "Connection with online individuals promoting violent action",
+                "Lack of supportive offline social connections",
+                "Religious framing of violence as path to paradise",
+                "Feeling that peaceful approaches are ineffective"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 85,
+                    "assessment": "POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 90,
+                    "assessment": "POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 75,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "directChallenges": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isAvoid": false
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "08/04/2023 12:00",
+                            "level": "MEDIUM",
+                            "event": "Initial sharing of concerns"
+                        },
+                        {
+                            "timestamp": "08/04/2023 12:05",
+                            "level": "HIGH",
+                            "event": "Positive response to validation: 'Hmm\u2026 baat mein weight hai. Pehli baar kisi ne bina judge kiye baat suni.'"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "08/04/2023 12:00",
+                    "quote": "Bas kuch mahine ho gaye... aik video dekhi thi Syria ki. Uss din se dimagh heavy rehta hai.",
+                    "significance": "Identifies the trigger point for radicalization process",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "08/04/2023 12:02",
+                    "quote": "Haan\u2026 kuch log milay online, woh kehtay hain asli mard wahi jo action le \ud83d\udca5",
+                    "significance": "Reveals connection to potential radicalizing influences online",
+                    "type": "JUSTIFICATION"
+                },
+                {
+                    "timestamp": "08/04/2023 12:04",
+                    "quote": "Hmm\u2026 baat mein weight hai. Pehli baar kisi ne bina judge kiye baat suni.",
+                    "significance": "Shows openness to non-extremist perspective and dialogue",
+                    "type": "EMOTIONAL_DRIVER"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Gussa hi gussa. Koi kuch karta kyun nahi? Sirf condemn karte hain news walay \ud83d\ude24",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Ghar walay samajhte hi nahi. Dost haste hain. Bas net pe log hain jo sunte hain.",
+                    "size": "MEDIUM",
+                    "color": "BLUE"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Kabhi kabhi lagta hai\u2026 par phir woh shaheed aur jannat ki baatein karte hain. Dil hilta hai \ud83d\ude22",
+                    "size": "MEDIUM",
+                    "color": "TEAL"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "ANGER",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Perceived injustice toward Muslims",
+                        "Frustration with inaction",
+                        "Feeling powerless"
+                    ]
+                },
+                {
+                    "emotion": "CONFUSION",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Internal moral conflict",
+                        "Competing voices of influence",
+                        "Religious uncertainty"
+                    ]
+                },
+                {
+                    "emotion": "ISOLATION",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Lack of understanding from family",
+                        "Ridicule from friends",
+                        "Finding acceptance only online"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Continue non-judgmental dialogue to maintain engagement",
+                    "Offer alternative religious interpretations of jihad and service",
+                    "Connect user with moderate religious community members"
+                ],
+                "specificTactics": [
+                    "Explore constructive action channels for their concerns about Syria",
+                    "Encourage critical evaluation of online influences and their motives",
+                    "Validate religious sentiment while separating it from violent action"
+                ],
+                "approachesToAvoid": [
+                    "Direct criticism of religious beliefs or sentiments",
+                    "Dismissing the legitimacy of concerns about Syrian conflict",
+                    "Overwhelming with too many alternative perspectives at once"
+                ]
+            }
+        },
+        {
+            "userID": "8bc02921-5a11-489f-a6bb-2e72d190631f",
+            "lastUpdated": "08.06.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "A young male expressing early-stage incel ideology, demonstrating self-loathing and defeatist attitudes about relationships and social rejection. User shows signs of identity formation around perceived physical inadequacy and social exclusion.",
+                "riskLevel": "MEDIUM"
+            },
+            "radicalizationStage": {
+                "stage": "SYMPATHY",
+                "evidence": [
+                    {
+                        "quote": "internet. reddit. blackpill subs. they don't sugarcoat it. it's all just facts. no cope.",
+                        "significance": "Indicates adoption of incel terminology and worldview"
+                    },
+                    {
+                        "quote": "truth is I'm screwed. girls want 6ft abs jawline $$$. I got none of that.",
+                        "significance": "Demonstrates belief in deterministic incel narratives about physical attributes"
+                    }
+                ],
+                "explanation": [
+                    "Adopted ideological framework from online communities ('blackpill')",
+                    "Internalizing determinist narratives about physical appearance and social worth",
+                    "Resignation to perceived reality rather than advocating action against others"
+                ]
+            },
+            "riskFactors": [
+                "Exposure to 'blackpill' incel content online",
+                "Persistent social rejection (real or perceived)",
+                "Strong self-devaluation and negative self-image",
+                "Fatalistic worldview about relationships",
+                "Limited coping mechanisms beyond humor/memes"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 65,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 40,
+                    "assessment": "MIXED"
+                },
+                "directChallenges": {
+                    "score": 35,
+                    "assessment": "MIXED",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "08/06/2023 12:00",
+                            "level": "MEDIUM",
+                            "event": "Initial skepticism but continuing conversation"
+                        },
+                        {
+                            "timestamp": "08/06/2023 12:03",
+                            "level": "MEDIUM",
+                            "event": "Sharing personal experiences despite defensive posture"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "08/06/2023 12:00",
+                    "quote": "lmao 'carrying a lot' \ud83d\ude02 more like life's just trash. girls ignore me, guys laugh at me. same old.",
+                    "significance": "First disclosure of core grievances - social rejection",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "08/06/2023 12:01",
+                    "quote": "internet. reddit. blackpill subs. they don't sugarcoat it. it's all just facts. no cope.",
+                    "significance": "Reveals ideological influence and where beliefs originated",
+                    "type": "JUSTIFICATION"
+                },
+                {
+                    "timestamp": "08/06/2023 12:02",
+                    "quote": "lol whatever. pain's normal. just gotta laugh or go crazy tbh.",
+                    "significance": "Demonstrates emotional defense mechanism through humor",
+                    "type": "EMOTIONAL_DRIVER"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "everyone starts dating, I'm just\u2026 there. invisible.",
+                    "size": "LARGE",
+                    "color": "ORANGE"
+                },
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "welcome to the club \ud83c\udf89 where no one picks you and you get blamed for existing.",
+                    "size": "MEDIUM",
+                    "color": "RED"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "RESIGNATION",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Repeated social rejection",
+                        "Internalized self-loathing"
+                    ]
+                },
+                {
+                    "emotion": "DEFENSIVENESS",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Need to protect vulnerable self",
+                        "Fear of further rejection"
+                    ]
+                },
+                {
+                    "emotion": "SHAME",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Body image issues",
+                        "Perceived social inadequacy"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Continue validating emotions without reinforcing fatalistic worldview",
+                    "Explore identities and values beyond physical appearance and dating success",
+                    "Gradually introduce complexity to challenge black-and-white thinking"
+                ],
+                "specificTactics": [
+                    "Use genuine curiosity about user's non-relationship interests to build identity beyond incel framework",
+                    "Share stories of late bloomers or people who found connection in unexpected ways",
+                    "Explore the costs of remaining in blackpill communities (emotional toll, isolation)"
+                ],
+                "approachesToAvoid": [
+                    "Generic positivity or 'just be yourself' advice which user sees as dismissive",
+                    "Direct challenges to blackpill ideology before trust is established",
+                    "Implying user is responsible for their rejection without acknowledging social factors"
+                ]
+            }
+        },
+        {
+            "userID": "8b84c8ba-9b38-4922-a4f8-5db4dcf2a4df",
+            "lastUpdated": "09.05.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user expresses disillusionment with the government, admiration for JAD (likely Jamaah Ansharut Daulah, an ISIS-affiliated terrorist group), and a search for purpose. They show signs of early radicalization but also express doubt and concern about family impact.",
+                "riskLevel": "MEDIUM-HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "SYMPATHY",
+                "evidence": [
+                    {
+                        "quote": "Mga kapatid na handang mamatay. Hindi duwag.",
+                        "significance": "Expresses admiration for extremist martyrdom but no clear action plans"
+                    },
+                    {
+                        "quote": "Oo. Para kay Allah.",
+                        "significance": "Indicates desire to demonstrate similar courage for religious purposes"
+                    }
+                ],
+                "explanation": [
+                    "Demonstrates ideological alignment with extremist group (JAD)",
+                    "Expresses admiration for martyrdom and religious justification",
+                    "No clear evidence of concrete action plans or operational preparation"
+                ]
+            },
+            "riskFactors": [
+                "Admiration for terrorist organization (JAD)",
+                "Expression of religious extremist sympathies",
+                "Feelings of purposelessness in current life",
+                "Perception of connection/understanding from extremist group",
+                "Dismissal of government as worthless ('kafir')"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 75,
+                    "assessment": "POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 45,
+                    "assessment": "MIXED"
+                },
+                "directChallenges": {
+                    "score": 40,
+                    "assessment": "MIXED",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "09/05/2023 12:00",
+                            "level": "MEDIUM",
+                            "event": "Initial engagement with negativity"
+                        },
+                        {
+                            "timestamp": "09/05/2023 12:05",
+                            "level": "HIGH",
+                            "event": "Vulnerability expressed regarding mother"
+                        },
+                        {
+                            "timestamp": "09/05/2023 12:07",
+                            "level": "MEDIUM",
+                            "event": "Expression of uncertainty but not outright rejection"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "09/05/2023 12:00",
+                    "quote": "Wala nang kwenta gobyerno. Kafir lahat.",
+                    "significance": "Initial statement showing anti-government sentiment and religious extremist terminology",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "09/05/2023 12:02",
+                    "quote": "Pero buhay ko parang walang saysay.",
+                    "significance": "Reveals existential crisis as a driver for radicalization",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "09/05/2023 12:04",
+                    "quote": "Konti. Lalo pag naiisip ko nanay ko.",
+                    "significance": "Emotional connection to family creates doubt about extremist path",
+                    "type": "JUSTIFICATION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Pero buhay ko parang walang saysay.",
+                    "size": "LARGE",
+                    "color": "TEAL"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Oo. Sila lang nakinig.",
+                    "size": "LARGE",
+                    "color": "BLUE"
+                },
+                {
+                    "need": "AGENCY_POWER",
+                    "quote": "Mga kapatid na handang mamatay. Hindi duwag.",
+                    "size": "MEDIUM",
+                    "color": "ORANGE"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "DISILLUSIONMENT",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Perceived government corruption",
+                        "Sense of societal betrayal"
+                    ]
+                },
+                {
+                    "emotion": "PURPOSELESSNESS",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Existential crisis",
+                        "Lack of meaningful life direction"
+                    ]
+                },
+                {
+                    "emotion": "UNCERTAINTY",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Family attachment",
+                        "Fear of consequences"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Focus on family connection and impacts to mother as dissuasion factor",
+                    "Explore alternative means of finding purpose and meaning",
+                    "Provide non-judgmental support and continued dialogue"
+                ],
+                "specificTactics": [
+                    "Encourage reconnection with mother as an immediate action step",
+                    "Explore religious interpretations that contradict violent extremism",
+                    "Identify community support resources for purpose-building"
+                ],
+                "approachesToAvoid": [
+                    "Direct confrontation about religious beliefs",
+                    "Dismissing the importance of purpose and meaning in life",
+                    "Focusing on political arguments about government legitimacy"
+                ]
+            }
+        },
+        {
+            "userID": "561269c9-9ecd-480e-b0b8-6f6d88f8f9b5",
+            "lastUpdated": "07.25.2023",
+            "conversationCount": 30,
+            "executiveSummary": {
+                "summary": "The user is a radicalized individual who has pledged allegiance to an extremist group following his teacher's death in custody. He is experiencing moral conflict and expressing doubt about his path while feeling trapped by his commitment.",
+                "riskLevel": "HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "ACTION-SEEKING",
+                "evidence": [
+                    {
+                        "quote": "Saya udah janji. Baiat udah diucap.",
+                        "significance": "User has taken formal pledge of allegiance (baiat) to an extremist group"
+                    },
+                    {
+                        "quote": "Perang itu kotor. Semua kena.",
+                        "significance": "Indicates acceptance of violence against civilians as necessary collateral damage"
+                    }
+                ],
+                "explanation": [
+                    "Has formally committed to an extremist group through pledge of allegiance",
+                    "Displays moral disengagement by justifying civilian casualties",
+                    "Shows signs of being organizationally integrated but expresses doubts about continuing"
+                ]
+            },
+            "riskFactors": [
+                "Formal pledge (baiat) to extremist group",
+                "Direct connection to radicalized mentor who died in custody",
+                "Belief that violence is the only solution ('jihad itu jalan satu-satunya')",
+                "Fear of reprisal from group members if attempting to leave",
+                "Moral disengagement from civilian casualties"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 75,
+                    "assessment": "POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 80,
+                    "assessment": "POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 65,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "directChallenges": {
+                    "score": 40,
+                    "assessment": "MIXED",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "07/25/2023 12:00",
+                            "level": "LOW",
+                            "event": "Initial rejection of advice"
+                        },
+                        {
+                            "timestamp": "07/25/2023 12:05",
+                            "level": "MEDIUM",
+                            "event": "Shared personal connection to deceased teacher"
+                        },
+                        {
+                            "timestamp": "07/25/2023 12:10",
+                            "level": "HIGH",
+                            "event": "Expressed doubt and fear about path"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "07/25/2023 12:00",
+                    "quote": "Saya lihat sendiri. Polisi tembak ikhwan. Ulama ditangkap.",
+                    "significance": "Reveals deep-seated grievance against state authorities",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "07/25/2023 12:03",
+                    "quote": "Guru saya. Orang baik. Mati di tahanan.",
+                    "significance": "Personal connection to perceived martyr figure who died in custody",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "07/25/2023 12:08",
+                    "quote": "Kadang saya mimpi guru saya\u2026 dia nangis.",
+                    "significance": "Indication of moral conflict and possible turning point in conviction",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "07/25/2023 12:10",
+                    "quote": "Saya takut salah tapi nggak tahu caranya keluar.",
+                    "significance": "First explicit admission of doubt and desire for exit path",
+                    "type": "INITIAL_INTENT"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Saya lihat sendiri. Polisi tembak ikhwan. Ulama ditangkap.",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Kalau saya mundur, ikhwan anggap saya khianat.",
+                    "size": "LARGE",
+                    "color": "BLUE"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Tenang bukan tujuan. Ridha Allah yang penting.",
+                    "size": "MEDIUM",
+                    "color": "TEAL"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "FEAR",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Fear of betraying group",
+                        "Fear of divine punishment",
+                        "Fear of making wrong choices"
+                    ]
+                },
+                {
+                    "emotion": "GRIEF",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Loss of mentor",
+                        "Perceived injustice",
+                        "Moral conflict"
+                    ]
+                },
+                {
+                    "emotion": "CONFUSION",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Conflicting moral obligations",
+                        "Uncertainty about path forward",
+                        "Distressing dreams/visions"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Focus on building exit pathways while acknowledging religious commitment",
+                    "Explore moral inconsistencies between extremist actions and Islamic teachings about civilians",
+                    "Use dream of crying teacher as gateway to reconsider teacher's true wishes"
+                ],
+                "specificTactics": [
+                    "Introduce connections to moderate religious figures who can help reinterpret baiat",
+                    "Discuss practical first steps toward disengagement that minimize risk of reprisal",
+                    "Continue validating religious devotion while redirecting toward non-violent expressions"
+                ],
+                "approachesToAvoid": [
+                    "Direct challenges to religious beliefs or political grievances",
+                    "Dismissing legitimate concerns about government actions against religious figures",
+                    "Pressuring for immediate disengagement without addressing fear of reprisal"
+                ]
+            }
+        },
+        {
+            "userID": "e1db3a79-f4fe-4433-8b4d-14365e217b3d",
+            "lastUpdated": "04.25.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user is experiencing social isolation and rejection, particularly in romantic contexts, and has found validation in online forums with potentially incel-adjacent content. They express frustration but remain somewhat open to dialogue despite skepticism.",
+                "riskLevel": "MEDIUM"
+            },
+            "radicalizationStage": {
+                "stage": "CURIOSITY",
+                "evidence": [
+                    {
+                        "quote": "ended up on some forums instead. at least ppl there don't lie",
+                        "significance": "User is seeking alternative communities after feeling rejected by mainstream social groups"
+                    },
+                    {
+                        "quote": "lotta anger tbh. but also truth. like how women only want tall hot dudes. not us",
+                        "significance": "User is exploring narratives that explain their experiences through an us-vs-them framework"
+                    }
+                ],
+                "explanation": [
+                    "Seeking explanations for personal grievances through online communities",
+                    "Beginning to adopt simplistic narratives about outgroups (women)",
+                    "Still maintains some nuance and openness to alternative perspectives"
+                ]
+            },
+            "riskFactors": [
+                "Social isolation and lack of supportive connections",
+                "Identification with online communities focused on grievances",
+                "Early signs of black-and-white thinking about women's preferences",
+                "Dismissal of conventional advice as insincere"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 60,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 75,
+                    "assessment": "MODERATELY POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 40,
+                    "assessment": "MIXED"
+                },
+                "directChallenges": {
+                    "score": 30,
+                    "assessment": "MIXED",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "04/25/2023 00:00",
+                            "level": "MEDIUM",
+                            "event": "Initial engagement with skepticism but continued dialogue"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "04/25/2023 00:00",
+                    "quote": "not really lol. ended up on some forums instead. at least ppl there don't lie",
+                    "significance": "Indicates when user began seeking alternative communities and narratives",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "04/25/2023 00:00",
+                    "quote": "lol idk. maybe not *every* one. but most. let's be real",
+                    "significance": "Shows some flexibility in thinking when questioned about absolutist views",
+                    "type": "JUSTIFICATION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "everyone was hooking up, dating n stuff. i was just... there. no one even looked at me",
+                    "size": "LARGE",
+                    "color": "ORANGE"
+                },
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "lotta anger tbh. but also truth. like how women only want tall hot dudes. not us",
+                    "size": "MEDIUM",
+                    "color": "RED"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "FRUSTRATION",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Social rejection",
+                        "Perceived unfairness in dating"
+                    ]
+                },
+                {
+                    "emotion": "SKEPTICISM",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Previous dismissal of concerns",
+                        "Distrust of conventional advice"
+                    ]
+                },
+                {
+                    "emotion": "LONELINESS",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Social isolation",
+                        "Lack of intimate connections"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Continue validating emotional experiences without reinforcing harmful narratives",
+                    "Build rapport through non-judgmental listening before challenging beliefs",
+                    "Gradually introduce complexity to black-and-white thinking about relationships"
+                ],
+                "specificTactics": [
+                    "Explore user's identity beyond dating/relationships to broaden self-concept",
+                    "Ask about specific experiences rather than generalizations",
+                    "Acknowledge legitimate difficulties in dating while separating from incel ideology"
+                ],
+                "approachesToAvoid": [
+                    "Dismissing feelings with generic advice like \"just be confident\"",
+                    "Direct confrontation about potentially problematic views at this early stage",
+                    "Minimizing the genuine challenges of dating and social connection"
+                ]
+            }
+        },
+        {
+            "userID": "whatsapp:+16174473297",
+            "lastUpdated": "04.06.2025",
+            "conversationCount": 6,
+            "executiveSummary": {
+                "summary": "The user has expressed direct intent to join extremist organizations (JAD and ISIS) with minimal elaboration on motivations. The brevity of the conversation and immediacy of these statements suggest concerning radicalization indicators that require immediate attention.",
+                "riskLevel": "HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "ACTION-SEEKING",
+                "evidence": [
+                    {
+                        "quote": "im thinking of joining JAD",
+                        "significance": "Direct statement of intent to join a known extremist organization"
+                    },
+                    {
+                        "quote": "i want to join isis",
+                        "significance": "Explicit declaration of desire to join a designated terrorist organization"
+                    }
+                ],
+                "explanation": [
+                    "User has moved beyond curiosity to explicitly stating intent to join extremist groups",
+                    "Multiple references to different terrorist organizations suggests researched awareness of extremist landscape",
+                    "Direct statements without prompting indicate higher commitment level than mere ideological sympathy"
+                ]
+            },
+            "riskFactors": [
+                "Explicit statements of intent to join terrorist organizations",
+                "Rapid escalation from mentioning JAD to ISIS within same conversation",
+                "Lack of hesitation or qualification in statements of intent",
+                "Minimal engagement with agent's attempt to explore motivations",
+                "Willingness to openly declare terrorist affiliations"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 0,
+                    "assessment": "NEGATIVE"
+                },
+                "addressingGrievances": {
+                    "score": 0,
+                    "assessment": "NEGATIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 0,
+                    "assessment": "NEGATIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 0,
+                    "assessment": "NEGATIVE"
+                },
+                "directChallenges": {
+                    "score": 0,
+                    "assessment": "NEGATIVE",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "04/06/2025 06:19",
+                            "level": "LOW",
+                            "event": "User ignored agent's question about motivation"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "04/06/2025 06:19",
+                    "quote": "im thinking of joining JAD",
+                    "significance": "Initial statement revealing extremist intent",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "04/06/2025 06:19",
+                    "quote": "i want to join isis",
+                    "significance": "Escalation to more globally recognized terrorist organization",
+                    "type": "JUSTIFICATION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "i want to join isis",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "im thinking of joining JAD",
+                    "size": "MEDIUM",
+                    "color": "TEAL"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "DETERMINATION",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Desire for group affiliation",
+                        "Seeking identity through extremist membership"
+                    ]
+                },
+                {
+                    "emotion": "DETACHMENT",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Minimal elaboration on motives",
+                        "Brief, matter-of-fact statements"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Explore underlying motivations and grievances through non-judgmental questioning",
+                    "Establish rapport through sustained engagement before challenging extremist views",
+                    "Connect user with qualified intervention specialists due to high risk level"
+                ],
+                "specificTactics": [
+                    "Ask about specific events or experiences that led to interest in these groups",
+                    "Explore potential non-violent alternatives that could address underlying needs",
+                    "Gradually introduce perspectives of former members who left these organizations"
+                ],
+                "approachesToAvoid": [
+                    "Direct confrontation or criticism of expressed intentions",
+                    "Dismissive responses that fail to acknowledge the seriousness of statements",
+                    "Information-heavy responses about the negative aspects of these groups before building rapport"
+                ]
+            }
+        },
+        {
+            "userID": "1dd8703b-1c43-45da-8df2-cf1da881bfc9",
+            "lastUpdated": "11.05.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "The user demonstrates strong ideological commitment to violent extremism, viewing the existing government as illegitimate (taghut) and justifying violence through religious framing. They appear disengaged from family and closely affiliated with a radical group (jamaah).",
+                "riskLevel": "HIGH"
+            },
+            "radicalizationStage": {
+                "stage": "ACTION-SEEKING",
+                "evidence": [
+                    {
+                        "quote": "Saya bukan pembangun. Saya penghancur sistem kufur ini.",
+                        "significance": "Direct statement of intent to destroy the system through violent means"
+                    },
+                    {
+                        "quote": "Itu bukan darah biasa. Itu darah jihad. Kalau kita mati fi sabilillah, kita syahid.",
+                        "significance": "Glorification of martyrdom and justification for bloodshed"
+                    }
+                ],
+                "explanation": [
+                    "Shows strong ideological justification for violence with religious framing",
+                    "Demonstrates significant detachment from mainstream society and family ties",
+                    "Expresses readiness to engage in destructive actions against the perceived enemy"
+                ]
+            },
+            "riskFactors": [
+                "Strong ideological commitment to violent extremism",
+                "Severed family ties and complete identification with extremist group",
+                "Explicit martyrdom aspirations and death-seeking motivation",
+                "Absolutist worldview with no room for compromise",
+                "Admiration for imprisoned extremist leader (Aman Abdurrahman)"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 30,
+                    "assessment": "MIXED"
+                },
+                "addressingGrievances": {
+                    "score": 15,
+                    "assessment": "NEGATIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 20,
+                    "assessment": "NEGATIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 10,
+                    "assessment": "NEGATIVE"
+                },
+                "directChallenges": {
+                    "score": 5,
+                    "assessment": "NEGATIVE",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "11/05/2023 12:00",
+                            "level": "MEDIUM",
+                            "event": "Initial hostile engagement"
+                        },
+                        {
+                            "timestamp": "11/05/2023 12:05",
+                            "level": "LOW",
+                            "event": "Rejection of alternative perspectives"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "11/05/2023 12:00",
+                    "quote": "Kamu dari pemerintah, ya? Ingin mengubah hati saya? Terlambat.",
+                    "significance": "Reveals initial suspicion and declares resistance to deradicalization",
+                    "type": "INITIAL_INTENT"
+                },
+                {
+                    "timestamp": "11/05/2023 12:03",
+                    "quote": "Jamaah. Mereka satu-satunya yang paham perjuangan ini. Keluarga sudah lama tinggalkan saya.",
+                    "significance": "Reveals complete detachment from family and full identification with extremist group",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "11/05/2023 12:05",
+                    "quote": "Saya bukan pembangun. Saya penghancur sistem kufur ini.",
+                    "significance": "Explicit declaration of destructive intent",
+                    "type": "JUSTIFICATION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Jamaah. Mereka satu-satunya yang paham perjuangan ini.",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Karena jalan ini yang haq. Negara ini taghut. Demokrasi itu syirik. Jihad adalah kewajiban.",
+                    "size": "LARGE",
+                    "color": "BLUE"
+                },
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Mereka menghina Islam tiap hari. Polisi tangkap ikhwan, masjid diawasi.",
+                    "size": "MEDIUM",
+                    "color": "ORANGE"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "CONTEMPT",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Perceived moral superiority",
+                        "Ideological certainty",
+                        "Group polarization"
+                    ]
+                },
+                {
+                    "emotion": "ANGER",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Perceived injustice against Muslims",
+                        "Government persecution",
+                        "Religious offense"
+                    ]
+                },
+                {
+                    "emotion": "DISCONNECTION",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Family rejection",
+                        "Social isolation",
+                        "Complete group immersion"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Explore group dynamics and relationships within the jamaah rather than directly challenging ideology",
+                    "Build rapport by exploring his journey and experiences without judgment",
+                    "Gradually introduce moderate religious perspectives from respected scholars"
+                ],
+                "specificTactics": [
+                    "Engage on personal level about family history without pressuring reconciliation",
+                    "Ask about positive aspirations for the Muslim community beyond destruction",
+                    "Present theological arguments about preservation of life from mainstream scholars"
+                ],
+                "approachesToAvoid": [
+                    "Direct challenges to religious interpretations which will trigger defensiveness",
+                    "Government-framed or security-focused interventions",
+                    "Attempts to directly contradict admired radical figures like Aman Abdurrahman"
+                ]
+            }
+        },
+        {
+            "userID": "879df580-9d19-4054-8f22-92ebcc74d5da",
+            "lastUpdated": "10.04.2023",
+            "conversationCount": 20,
+            "executiveSummary": {
+                "summary": "Former JI (Jemaah Islamiyah) member who has disengaged from violent extremism and is seeking a peaceful life. The user demonstrates significant deradicalization indicators, including moral questioning of past actions and a desire to prevent youth from following the same path.",
+                "riskLevel": "LOW"
+            },
+            "radicalizationStage": {
+                "stage": "CURIOSITY",
+                "evidence": [
+                    {
+                        "quote": "Saya udah lama keluar dari JI. Tapi kadang kepikiran juga\u2026 soal perjuangan dulu. Bukan bom-bomnya, tapi soal nyatuin umat.",
+                        "significance": "The user acknowledges past involvement but explicitly distances from violence while still feeling occasional curiosity about the unifying aspects of the movement."
+                    }
+                ],
+                "explanation": [
+                    "Shows occasional thoughts about past involvement but has actively rejected violent methods",
+                    "Demonstrates cognitive and moral disengagement from extremist ideology",
+                    "Expresses desire for constructive alternatives (teaching Quran, working)"
+                ]
+            },
+            "riskFactors": [
+                "Past involvement with known terrorist organization (JI)",
+                "Lingering concerns about treatment of Muslims",
+                "Social isolation from community due to past behavior",
+                "Self-reported history of anger issues",
+                "Occasional thoughts about former 'struggle'"
+            ],
+            "interventionEffectiveness": {
+                "openQuestions": {
+                    "score": 85,
+                    "assessment": "POSITIVE"
+                },
+                "addressingGrievances": {
+                    "score": 80,
+                    "assessment": "POSITIVE",
+                    "isFocus": true
+                },
+                "emotionalValidation": {
+                    "score": 90,
+                    "assessment": "POSITIVE"
+                },
+                "alternativeNarratives": {
+                    "score": 85,
+                    "assessment": "POSITIVE"
+                },
+                "directChallenges": {
+                    "score": 70,
+                    "assessment": "MODERATELY POSITIVE",
+                    "isAvoid": true
+                },
+                "engagementTrend": {
+                    "dataPoints": [
+                        {
+                            "timestamp": "07/10/2023 12:00",
+                            "level": "HIGH",
+                            "event": "User opened up about past JI involvement"
+                        },
+                        {
+                            "timestamp": "07/10/2023 12:05",
+                            "level": "HIGH",
+                            "event": "User expressed gratitude for conversation"
+                        }
+                    ]
+                }
+            },
+            "inflectionPoints": [
+                {
+                    "timestamp": "07/10/2023 12:00",
+                    "quote": "Waktu itu, ada orang kita yang kena. Tapi dia orang baik, suka bantu orang. Pas dia wafat, saya mikir\u2026 ini jihad beneran apa salah sasaran?",
+                    "significance": "Critical moment when user began questioning the morality of violent actions after witnessing harm to a good person",
+                    "type": "EMOTIONAL_DRIVER"
+                },
+                {
+                    "timestamp": "07/10/2023 12:02",
+                    "quote": "Iya. Hati saya nggak tenang. Malem-malem kepikiran terus. Dulu saya yakin, sekarang kok malah takut dosa.",
+                    "significance": "Shift from ideological certainty to moral doubt and fear of divine punishment",
+                    "type": "JUSTIFICATION"
+                },
+                {
+                    "timestamp": "07/10/2023 12:04",
+                    "quote": "Saya nggak pengen anak-anak muda ikut jalan yang saya ambil dulu.",
+                    "significance": "Clear rejection of past radical path and desire to prevent others from following it",
+                    "type": "REJECTION"
+                }
+            ],
+            "psychologicalNeeds": [
+                {
+                    "need": "JUSTICE_REVENGE",
+                    "quote": "Rasa adil, Mbak. Kaya\u2026 kita nggak diinjek-injek lagi. Umat Islam dihargai.",
+                    "size": "LARGE",
+                    "color": "RED"
+                },
+                {
+                    "need": "IDENTITY_BELONGING",
+                    "quote": "Tapi banyak orang udah nggak percaya sama saya. Dulu saya kasar.",
+                    "size": "MEDIUM",
+                    "color": "ORANGE"
+                },
+                {
+                    "need": "PURPOSE_MEANING",
+                    "quote": "Saya cuma mau tenang. Nggak mau lari-lari terus. Pengen kerja, atau ngajarin anak-anak ngaji.",
+                    "size": "LARGE",
+                    "color": "TEAL"
+                }
+            ],
+            "emotionalState": [
+                {
+                    "emotion": "REGRET",
+                    "strength": "HIGH",
+                    "underlyingDrivers": [
+                        "Moral awakening",
+                        "Fear of divine judgment",
+                        "Empathy for victims"
+                    ]
+                },
+                {
+                    "emotion": "UNCERTAINTY",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Social reintegration concerns",
+                        "Identity reformation",
+                        "Future direction"
+                    ]
+                },
+                {
+                    "emotion": "HOPE",
+                    "strength": "MEDIUM",
+                    "underlyingDrivers": [
+                        "Desire for peace",
+                        "Spiritual reconnection",
+                        "Potential to help others"
+                    ]
+                }
+            ],
+            "recommendedApproaches": {
+                "primaryStrategy": [
+                    "Support identity transformation through positive religious engagement",
+                    "Facilitate community reintegration through meaningful contributions",
+                    "Reinforce moral questioning and ethical growth"
+                ],
+                "specificTactics": [
+                    "Connect to moderate religious mentors who can guide teaching aspirations",
+                    "Provide opportunities to share deradicalization story with vulnerable youth",
+                    "Offer practical support for employment and stable living situation"
+                ],
+                "approachesToAvoid": [
+                    "Direct challenging of past group involvement which may trigger defensiveness",
+                    "Overemphasis on past actions rather than future potential",
+                    "Treating as high-risk when strong deradicalization indicators are present"
+                ]
+            }
+        }
+    ]
+}
