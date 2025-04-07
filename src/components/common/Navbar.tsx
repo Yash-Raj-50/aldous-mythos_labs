@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { Button, Select, MenuItem, FormControl, SelectChangeEvent, useMediaQuery } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -16,10 +17,12 @@ interface NavbarProps {
     activeUsers?: number | null;
     conversationCount?: number | null;
   };
-  usersList?: UserListData[]; // Optional prop for user list (passed from parent)
+  usersList?: UserListData[];
+  onUpdateAnalysis?: () => Promise<void>; // New prop
+  isUpdating?: boolean; // New prop
 }
 
-const Navbar = ({ data, usersList }: NavbarProps) => {
+const Navbar = ({ data, usersList, onUpdateAnalysis, isUpdating = false }: NavbarProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const isHomePage = pathname === "/";
@@ -66,7 +69,6 @@ const Navbar = ({ data, usersList }: NavbarProps) => {
     }
   };
 
-  // Existing Navbar JSX, but replace people_list.data with users
   return (
     <div className={`bg-[#253A5C] text-white p-4 px-4 md:px-8 ${isSmallScreen ? 'flex flex-col' : 'flex justify-between items-center'}`}>
       {/* Left side - Title and dropdown */}
@@ -83,80 +85,108 @@ const Navbar = ({ data, usersList }: NavbarProps) => {
           </div>
         </div>
         
-        {/* User Dropdown */}
-        <FormControl 
-          size="small" 
-          fullWidth={isSmallScreen}
-          sx={{ 
-            minWidth: 180,
-            marginLeft: isSmallScreen ? 0 : 1,
-            marginBottom: isSmallScreen ? 2 : 0,
-            "& .MuiOutlinedInput-root": {
-              color: "white",
-              borderColor: "white",
-              borderRadius: "4px",
-              backgroundColor: "transparent",
-              "& fieldset": {
+        {/* User Dropdown and Update Button Group */}
+        <div className={`flex ${isSmallScreen ? 'w-full flex-col' : 'items-center'}`}>
+          <FormControl 
+            size="small" 
+            fullWidth={isSmallScreen}
+            sx={{ 
+              minWidth: 180,
+              marginLeft: isSmallScreen ? 0 : 1,
+              marginBottom: isSmallScreen ? 2 : 0,
+              "& .MuiOutlinedInput-root": {
+                color: "white",
                 borderColor: "white",
-                borderWidth: "1px",
+                borderRadius: "4px",
+                backgroundColor: "transparent",
+                "& fieldset": {
+                  borderColor: "white",
+                  borderWidth: "1px",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                  borderWidth: "1px",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                  borderWidth: "1px",
+                },
               },
-              "&:hover fieldset": {
-                borderColor: "white",
-                borderWidth: "1px",
+              "& .MuiSelect-icon": {
+                color: "white",
               },
-              "&.Mui-focused fieldset": {
-                borderColor: "white",
-                borderWidth: "1px",
+              "& .MuiInputBase-input": {
+                padding: "6px 14px",
               },
-            },
-            "& .MuiSelect-icon": {
-              color: "white",
-            },
-            "& .MuiInputBase-input": {
-              padding: "6px 14px",
-            },
-          }}
-        >
-          <Select
-            value={selectedUser}
-            onChange={handleUserChange}
-            displayEmpty
-            IconComponent={KeyboardArrowDownIcon}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  backgroundColor: 'rgba(37, 58, 92, 0.95)',
-                  color: 'white',
-                  maxHeight: '300px',
-                  '& .MuiMenuItem-root': {
-                    '&:hover': {
-                      backgroundColor: 'rgba(58, 91, 133, 0.7)',
-                    },
-                    '&.Mui-selected': {
-                      backgroundColor: 'rgba(58, 91, 133, 0.9)',
+            }}
+          >
+            <Select
+              value={selectedUser}
+              onChange={handleUserChange}
+              displayEmpty
+              IconComponent={KeyboardArrowDownIcon}
+              MenuProps={{
+                PaperProps: {
+                  sx: {
+                    backgroundColor: 'rgba(37, 58, 92, 0.95)',
+                    color: 'white',
+                    maxHeight: '300px',
+                    '& .MuiMenuItem-root': {
                       '&:hover': {
                         backgroundColor: 'rgba(58, 91, 133, 0.7)',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(58, 91, 133, 0.9)',
+                        '&:hover': {
+                          backgroundColor: 'rgba(58, 91, 133, 0.7)',
+                        },
                       },
                     },
                   },
                 },
-              },
-            }}
-          >
-            <MenuItem value="" disabled>
-              {isHomePage ? "Select User" : `User #${profileID}`}
-            </MenuItem>
-            {users.map((person) => (
-              <MenuItem 
-                key={person.userID} 
-                value={person.userID}
-                sx={{ fontSize: '0.875rem' }}
-              >
-                User #{person.userID}
+              }}
+            >
+              <MenuItem value="" disabled>
+                {isHomePage ? "Select User" : `User #${profileID}`}
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+              {users.map((person) => (
+                <MenuItem 
+                  key={person.userID} 
+                  value={person.userID}
+                  sx={{ fontSize: '0.875rem' }}
+                >
+                  User #{person.userID}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          
+          {/* Update Analysis Button - Only show on dashboard */}
+          {isDashboard && onUpdateAnalysis && (
+            <Button
+              variant="outlined"
+              startIcon={<AutorenewIcon />}
+              sx={{
+                color: 'white',
+                borderColor: 'white',
+                marginLeft: isSmallScreen ? 0 : 2,
+                marginBottom: isSmallScreen ? 2 : 0,
+                '&:hover': { 
+                  backgroundColor: 'white', 
+                  color: '#253A5C' 
+                },
+                '&.Mui-disabled': {
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                }
+              }}
+              onClick={onUpdateAnalysis}
+              disabled={isUpdating}
+            >
+              {isUpdating ? 'Updating...' : 'Update Analysis'}
+            </Button>
+          )}
+        </div>
       </div>
       
       {/* Right side - Status info and logout button */}

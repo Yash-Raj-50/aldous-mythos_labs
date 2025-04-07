@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@mui/material";
 import { fetchUserDetails } from "@/actions/fetchUserDetails";
 import { fetchUsers } from "@/actions/fetchUsers";
+import { updateUserAnalysis } from "@/actions/updateUserAnalysis";
 // import html2canvas from "html2canvas";
 import domtoimage from "dom-to-image-more"; // Import dom-to-image-more for better image generation
 import jsPDF from "jspdf";
@@ -30,51 +31,83 @@ const Page = () => {
   const [error, setError] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [usersList, setUsersList] = useState<any[]>([]);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const gridRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const userID = pathname.split("/")[2];
 
   // Fetch user details when the component mounts or userID changes
-// In your useEffect:
+  // In your useEffect:
 
-useEffect(() => {
-  const loadUserData = async () => {
-    if (!userID) return;
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!userID) return;
 
-    setLoading(true);
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Fetch the user details
+        const userDetails = await fetchUserDetails(userID);
+
+        // Check if userDetails is an error object
+        if (userDetails && userDetails.error === true) {
+          setError(userDetails.message || 'Failed to fetch user data');
+          return;
+        }
+
+        if (!userDetails) {
+          setError('User not found');
+          return;
+        }
+
+        setUserData(userDetails);
+
+        // Also fetch the users list for the dropdown
+        const { data } = await fetchUsers();
+        setUsersList(data);
+      } catch (err) {
+        console.error('Error loading user data:', err);
+        setError('Failed to load user data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, [userID]);
+
+
+  // Function to handle user analysis update
+  const handleUpdateAnalysis = async () => {
+    if (!userID || isUpdating) return;
+    
+    setIsUpdating(true);
     setError(null);
-
+    
     try {
-      // Fetch the user details
-      const userDetails = await fetchUserDetails(userID);
-
-      // Check if userDetails is an error object
-      if (userDetails && userDetails.error === true) {
-        setError(userDetails.message || 'Failed to fetch user data');
-        return;
+      const result = await updateUserAnalysis(userID);
+      
+      if (result.error) {
+        console.error("Error updating analysis:", result.message);
+        setError(result.message || "Failed to update analysis");
+      } else {
+        // Force a state update by creating a new object
+        // This ensures React detects the change and re-renders
+        setUserData({
+          ...result.data,
+          _updated: result.timestamp // Add a hidden property to force state update
+        });
+        console.log("Analysis updated successfully");
       }
-
-      if (!userDetails) {
-        setError('User not found');
-        return;
-      }
-
-      setUserData(userDetails);
-
-      // Also fetch the users list for the dropdown
-      const { data } = await fetchUsers();
-      setUsersList(data);
     } catch (err) {
-      console.error('Error loading user data:', err);
-      setError('Failed to load user data');
+      console.error("Error in update process:", err);
+      setError("Failed to update analysis");
     } finally {
-      setLoading(false);
+      setIsUpdating(false);
     }
   };
-
-  loadUserData();
-}, [userID]);
 
   // Function to generate PDF from the Grid component
   const handleDownloadPDF = async () => {
@@ -237,7 +270,9 @@ useEffect(() => {
             lastlastUpdated: userData.lastUpdated || 'Unknown',
             conversationCount: userData.conversationCount || 0,
           }}
-          usersList={usersList}  // Pass the users list to Navbar
+          usersList={usersList}
+          onUpdateAnalysis={handleUpdateAnalysis}
+          isUpdating={isUpdating}
         />
 
         {/* Tab Bar - Updated to match Safari style */}
@@ -246,8 +281,8 @@ useEffect(() => {
             <button
               onClick={() => setActiveTab('analysis')}
               className={`px-6 h-full font-medium flex items-center justify-center min-w-[200px] ${activeTab === 'analysis'
-                  ? 'bg-[#3A5B85]'
-                  : 'text-gray-200 hover:bg-[#304b70]'
+                ? 'bg-[#3A5B85]'
+                : 'text-gray-200 hover:bg-[#304b70]'
                 }`}
             >
               Analysis
@@ -257,8 +292,8 @@ useEffect(() => {
             <button
               onClick={() => setActiveTab('chat')}
               className={`px-6 h-full font-medium flex items-center justify-center min-w-[120px] ${activeTab === 'chat'
-                  ? 'bg-[#3A5B85]'
-                  : 'text-gray-200 hover:bg-[#304b70]'
+                ? 'bg-[#3A5B85]'
+                : 'text-gray-200 hover:bg-[#304b70]'
                 }`}
             >
               Chat History

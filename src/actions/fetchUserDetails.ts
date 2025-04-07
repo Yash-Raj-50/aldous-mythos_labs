@@ -102,7 +102,11 @@ function formatNewClusterMessages(messages: any[] | undefined) {
   });
 }
 
-export async function fetchUserDetails(userID: string) {
+export async function fetchUserDetails(userID: string, forceRefresh = false) {
+  console.log(`Attempting to connect to MongoDB for user ${userID}`);
+    // Create a unique client instance for each request when forceRefresh is true
+  // This avoids potential connection caching issues
+  const clientOptions = forceRefresh ? { connectTimeoutMS: 5000 } : {};
   try {
     // Get MongoDB credentials from environment variables
     const MONGODB_USERNAME = process.env.NEXT_PUBLIC_MONGODB_USERNAME;
@@ -117,11 +121,15 @@ export async function fetchUserDetails(userID: string) {
     
     // Connect to primary MongoDB (ctbot cluster)
     const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@ctbot.5vx6h.mongodb.net/?retryWrites=true&w=majority&appName=CTBot`;
-    const client = new MongoClient(uri);
+    const client = new MongoClient(uri, clientOptions);
     
     // Connect to chat MongoDB (clusteraustraliaflex)
     const chatUri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/`;
-    const chatClient = new MongoClient(chatUri);
+    const chatClient = new MongoClient(chatUri, clientOptions);
+    
+    if (forceRefresh) {
+      console.log(`Force refreshing user data for ${userID}`);
+    }
     
     try {
       // Connect to both clusters
