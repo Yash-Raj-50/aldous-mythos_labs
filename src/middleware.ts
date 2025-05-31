@@ -36,8 +36,7 @@ export async function middleware(request: NextRequest) {
     try {
       await jwtVerify(token, JWT_SECRET);
       isValidToken = true;
-    } catch (error) {
-      console.error('Token verification failed:', error);
+    } catch {
       isValidToken = false;
     }
   }

@@ -16,10 +16,11 @@ import { usePathname } from "next/navigation";
 import { Button } from "@mui/material";
 import { fetchUserDetails } from "@/actions/fetchUserDetails";
 import { fetchUsers } from "@/actions/fetchUsers";
-import { updateUserAnalysis } from "@/actions/updateUserAnalysis";
+import { updateUserAnalysis } from "@/actions/updateUserAnalysisNew";
 // import html2canvas from "html2canvas";
 import domtoimage from "dom-to-image-more"; // Import dom-to-image-more for better image generation
 import jsPDF from "jspdf";
+import { useAuth } from "@/context/AuthContext"; // Add this import
 
 
 const Page = () => {
@@ -36,6 +37,39 @@ const Page = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const userID = pathname.split("/")[2];
+  const { user: currentUser } = useAuth(); // Get current user from AuthContext
+
+  // Helper function to format date for better readability
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'Unknown';
+    
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
+      
+      // If less than 24 hours ago, show relative time
+      if (diffInHours < 24) {
+        if (diffInHours < 1) {
+          const diffInMinutes = Math.round(diffInHours * 60);
+          return `${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`;
+        }
+        const hours = Math.round(diffInHours);
+        return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+      }
+      
+      // Otherwise show formatted date
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return dateString;
+    }
+  };
 
   // Fetch user details when the component mounts or userID changes
   // In your useEffect:
@@ -52,7 +86,7 @@ const Page = () => {
         const userDetails = await fetchUserDetails(userID);
 
         // Check if userDetails is an error object
-        if (userDetails && userDetails.error === true) {
+        if (userDetails && 'error' in userDetails && userDetails.error === true) {
           setError(userDetails.message || 'Failed to fetch user data');
           return;
         }
@@ -67,8 +101,7 @@ const Page = () => {
         // Also fetch the users list for the dropdown
         const { data } = await fetchUsers();
         setUsersList(data);
-      } catch (err) {
-        console.error('Error loading user data:', err);
+      } catch {
         setError('Failed to load user data');
       } finally {
         setLoading(false);
@@ -89,8 +122,12 @@ const Page = () => {
     try {
       const result = await updateUserAnalysis(userID);
       
+      if (!result) {
+        setError("Failed to update analysis - no response received");
+        return;
+      }
+      
       if (result.error) {
-        console.error("Error updating analysis:", result.message);
         setError(result.message || "Failed to update analysis");
       } else {
         // Force a state update by creating a new object
@@ -99,11 +136,9 @@ const Page = () => {
           ...result.data,
           _updated: result.timestamp // Add a hidden property to force state update
         });
-        console.log("Analysis updated successfully");
       }
-    } catch (err) {
-      console.error("Error in update process:", err);
-      setError("Failed to update analysis");
+    } catch {
+        setError("Failed to update analysis");
     } finally {
       setIsUpdating(false);
     }
@@ -170,8 +205,6 @@ const Page = () => {
       const elemWidth = clone.offsetWidth;
       const ratio = elemHeight / elemWidth;
 
-      console.log("Generating PDF...");
-
       // Add a small delay to ensure all styles are applied
       await new Promise(resolve => setTimeout(resolve, 100));
 
@@ -229,9 +262,8 @@ const Page = () => {
 
       // Save the PDF
       pdf.save(filename);
-      console.log("PDF generated successfully");
-    } catch (error) {
-      console.error("Error generating PDF:", error);
+    } catch {
+      // PDF generation failed silently
     } finally {
       setIsGeneratingPDF(false);
     }
@@ -267,16 +299,17 @@ const Page = () => {
       <header className="sticky top-0 z-10">
         <Navbar
           data={{
-            lastlastUpdated: userData.lastUpdated || 'Unknown',
+            lastUpdated: formatDate(userData.lastUpdated),
             conversationCount: userData.conversationCount || 0,
           }}
           usersList={usersList}
+          currentUser={currentUser}
           onUpdateAnalysis={handleUpdateAnalysis}
           isUpdating={isUpdating}
         />
 
         {/* Tab Bar - Updated to match Safari style */}
-        <div className="bg-[#253A5C] h-10 flex items-center justify-between">
+        <div className="bg-[#253A5C] h-10 flex items-center justify-between ">
           <div className="flex items-center text-white h-full overflow-x-scroll">
             <button
               onClick={() => setActiveTab('analysis')}
@@ -334,7 +367,7 @@ const Page = () => {
 
       <main>
         {activeTab === 'analysis' ? (
-          <div ref={gridRef}>
+          <div ref={gridRef} className="max-w-screen-xl mx-auto">
             <Grid>
               <ExecutiveSummary data={userData.executiveSummary} />
               <RadStageAssessment data={userData.radicalizationStage} />

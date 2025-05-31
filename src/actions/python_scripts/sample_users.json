@@ -1,0 +1,19 @@
+[
+  {
+    "username": "admin_user",
+    "password": "$2b$10$hashedpassword123",
+    "userClass": "admin",
+    "profilePic": "https://aldous-dummy-uploads.s3.us-east-1.amazonaws.com/profiles/admin.jpg"
+  },
+  {
+    "username": "john_client", 
+    "password": "$2b$10$hashedpassword456",
+    "userClass": "client",
+    "agents": []
+  },
+  {
+    "username": "superuser_jane",
+    "password": "$2b$10$hashedpassword789", 
+    "userClass": "superuser"
+  }
+]

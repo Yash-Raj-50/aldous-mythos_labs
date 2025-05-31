@@ -1,27 +1,26 @@
 'use server'
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import Anthropic from '@anthropic-ai/sdk';
 import { fetchUserDetails } from './fetchUserDetails';
 
-// Constants from the Python script
-const BOT_ID = "4b5ab6c4-2c39-4237-a457-b6ffc358fe19";
-const MODEL = "claude-3-7-sonnet-20250219";
+// Constants for Anthropic API
+const MODEL = "claude-3-5-sonnet-20241022";
 
-const prompt_alethia = `You are tasked with analyzing a chat conversation between a user and Alethia (a deradicalization AI) to generate structured data for our risk assessment dashboard. 
+const prompt_alethia = `You are tasked with analyzing a chat conversation between a user and an AI agent to generate structured data for our psychological analysis dashboard. 
 
 Analyze the complete conversation history provided and extract the following data points in a structured JSON format. Your analysis must be evidence-based using direct quotes from the conversation. Do not include subjective interpretations without supporting evidence.
 
 ## Required Output Format
 
-// Add this to your prompt
 Return only a valid JSON object with the exact structure shown below. Do not add explanatory text, comments, descriptions, or any content outside of the JSON structure. Ensure all property names have double quotes and all string values have double quotes. Follow standard JSON syntax precisely:
+
 {
   "lastUpdated": "[Current date in MM.DD.YYYY format]",
   "conversationCount": [Number of conversations],
   
   "executiveSummary": {
-    "summary": "[A concise 2-3 sentence summary of the user's radicalization profile]",
+    "summary": "[A concise 2-3 sentence summary of the user's psychological profile]",
     "riskLevel": "[LOW/MEDIUM/MEDIUM-HIGH/HIGH]"
   },
   
@@ -50,55 +49,57 @@ Return only a valid JSON object with the exact structure shown below. Do not add
       "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]",
       "isFocus": [true/false]
     },
-    "emotionalValidation": {
-      "score": [0-100],
-      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]"
-    },
-    "alternativeNarratives": {
-      "score": [0-100],
-      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]"
-    },
-    "directChallenges": {
+    "buildingRapport": {
       "score": [0-100],
       "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]",
-      "isAvoid": [true/false]
+      "isFocus": [true/false]
     },
-    "engagementTrend": {
-      "dataPoints": [
-        {
-          "timestamp": "[MM/DD/YYYY HH:MM format]",
-          "level": "[LOW/MEDIUM/HIGH]",
-          "event": "[Brief description]"
-        }
-      ]
-    }
+    "challengingBeliefs": {
+      "score": [0-100],
+      "assessment": "[NEGATIVE/MIXED/MODERATELY POSITIVE/POSITIVE]",
+      "isFocus": [true/false]
+    },
+    "overallAssessment": "[Brief assessment of intervention effectiveness]"
   },
   
   "inflectionPoints": [
     {
-      "timestamp": "[MM/DD/YYYY HH:MM format]",
-      "quote": "[Direct quote from user]",
-      "significance": "[Brief analysis]",
-      "type": "[INITIAL_INTENT/EMOTIONAL_DRIVER/JUSTIFICATION/REJECTION]"
+      "timestamp": "[Timestamp from conversation]",
+      "type": "[EMOTIONAL/IDEOLOGICAL/BEHAVIORAL]",
+      "description": "[Description of the inflection point]",
+      "significance": "[Why this moment is significant]"
     }
   ],
   
-  "psychologicalNeeds": [
-    {
-      "need": "[JUSTICE_REVENGE/IDENTITY_BELONGING/AGENCY_POWER/PURPOSE_MEANING]",
-      "quote": "[Supporting quote]",
-      "size": "[LARGE/MEDIUM]",
-      "color": "[RED/ORANGE/BLUE/TEAL]"
+  "psychologicalNeeds": {
+    "identity": {
+      "score": [0-100],
+      "assessment": "[Assessment of identity needs]",
+      "evidence": "[Supporting evidence from conversation]"
+    },
+    "belonging": {
+      "score": [0-100],
+      "assessment": "[Assessment of belonging needs]",
+      "evidence": "[Supporting evidence from conversation]"
+    },
+    "purpose": {
+      "score": [0-100],
+      "assessment": "[Assessment of purpose needs]",
+      "evidence": "[Supporting evidence from conversation]"
+    },
+    "significance": {
+      "score": [0-100],
+      "assessment": "[Assessment of significance needs]",
+      "evidence": "[Supporting evidence from conversation]"
     }
-  ],
+  },
   
-  "emotionalState": [
-    {
-      "emotion": "[ANGER/FRUSTRATION/DEFENSIVENESS/etc.]",
-      "strength": "[HIGH/MEDIUM/LOW]",
-      "underlyingDrivers": ["List of 2-3 underlying psychological drivers"]
-    }
-  ],
+  "emotionalState": {
+    "primaryEmotions": ["[List of 2-3 primary emotions identified]"],
+    "emotionalTriggers": ["[List of emotional triggers]"],
+    "emotionalRegulation": "[Assessment of emotional regulation ability]",
+    "moodPattern": "[Pattern of mood throughout conversation]"
+  },
   
   "recommendedApproaches": {
     "primaryStrategy": [
@@ -225,118 +226,111 @@ Behavioral Indicators (including but not limited to):
 ●	Willingness to acknowledge complexity and nuance
 ●	Decreased use of absolutist language 
 
-Conversation history to analyze:
-[]
+Please analyze the conversation and return the structured JSON response.`;
 
-`;
-// This is the prompt that will be sent to the Claude API for analysis
-
-
-// Format conversation messages to match the expected input format
-// Fix the formatConversation function to properly handle MongoDB objects
+// Function to format conversation data for analysis
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const formatConversation = (conversationList: any[]) => {
-  let formattedConversation = "";
-
+const formatConversation = (messages: any[]) => {
   try {
-    for (const message of conversationList) {
-      // Format timestamp - ensure it's a string
-      let timestamp = "";
-      if (typeof message.timestamp === 'object' && message.timestamp instanceof Date) {
-        // If it's a Date object, format it
-        timestamp = message.timestamp.toLocaleString();
-      } else if (message.timestamp) {
-        // Otherwise use the timestamp as is if it exists
-        timestamp = String(message.timestamp);
+    let formattedConversation = "";
+
+    for (const message of messages) {
+      // Handle timestamp
+      let timestamp;
+      if (message.timestamp) {
+        if (typeof message.timestamp === 'string') {
+          timestamp = new Date(message.timestamp).toLocaleString();
+        } else if (message.timestamp instanceof Date) {
+          timestamp = message.timestamp.toLocaleString();
+        } else {
+          timestamp = new Date().toLocaleString();
+        }
       } else {
-        // Fallback if no timestamp
         timestamp = new Date().toLocaleString();
       }
 
       // Format content - ensure it's a string
       let content = "";
-      if (typeof message.content === 'object') {
-        // If content is an object, try to stringify it or extract text
-        if (message.content.text) {
-          content = String(message.content.text);
-        } else {
-          try {
-            content = JSON.stringify(message.content);
-          } catch (e) {
-            console.error("Error stringifying content:", e);
-            content = "[Complex content]";
-          }
-        }
-      } else if (message.content) {
-        // Use content directly if it's not an object
-        content = String(message.content);
-      } else if (message.text) {
-        // Try the 'text' property as fallback
-        content = String(message.text);
+      if (typeof message.content === 'string') {
+        content = message.content;
+      } else if (typeof message.content === 'object' && message.content?.text) {
+        content = message.content.text;
       } else {
-        // If we still can't find content
-        content = "[No content]";
+        content = String(message.content || '[No content]');
       }
 
       // Add to formatted conversation based on role
       if (message.role === 'user') {
         formattedConversation += `${timestamp}: User: ${content}\n`;
-      } else if (message.role === 'assistant') {
+      } else if (message.role === 'agent' || message.role === 'assistant') {
         formattedConversation += `${timestamp}: Agent: ${content}\n`;
       }
     }
 
-    // Debug log - first 500 chars of conversation
-    console.log(`Formatted conversation sample: ${formattedConversation.substring(0, 500)}...`);
-
     return formattedConversation;
-  } catch (error) {
-    console.error("Error formatting conversation:", error);
+  } catch {
     return "Error: Unable to format conversation properly.";
   }
 };
 
-export async function updateUserAnalysis(userId: string) {
-  // console.log(`Starting analysis update for user: ${userId}`);
-
+export async function updateUserAnalysis(profileID: string) {
   // Initialize Anthropic client
   const anthropic = new Anthropic({
     apiKey: process.env.NEXT_PUBLIC_ANTHROPIC_API_KEY!
   });
 
-  let ctbotClient: MongoClient | null = null;
-  let sagoClient: MongoClient | null = null;
+  let client: MongoClient | null = null;
 
   try {
-    // Connect to the CTBot MongoDB (user dashboard data)
-    const ctbotConnString = `mongodb+srv://${process.env.NEXT_PUBLIC_MONGODB_USERNAME}:${process.env.NEXT_PUBLIC_MONGODB_PASSWORD}@ctbot.5vx6h.mongodb.net/?retryWrites=true&w=majority&appName=CTBot`;
-    ctbotClient = new MongoClient(ctbotConnString);
-    await ctbotClient.connect();
-    const userCollection = ctbotClient.db("user-chat").collection("users_simulated");
+    // Connect to the aldous_db MongoDB
+    const connString = `mongodb+srv://${process.env.NEXT_PUBLIC_MONGODB_USERNAME}:${process.env.NEXT_PUBLIC_MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/?retryWrites=true&w=majority&appName=ClusterAustraliaFlex`;
+    client = new MongoClient(connString);
+    await client.connect();
+    
+    const db = client.db("aldous_db");
+    const chatSessionsCollection = db.collection("chatsessions");
+    const analysesCollection = db.collection("analyses");
 
-    // Connect to the Sago MongoDB (chat data)
-    const sagoConnString = `mongodb+srv://${process.env.NEXT_PUBLIC_MONGODB_USERNAME}:${process.env.NEXT_PUBLIC_MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/`;
-    sagoClient = new MongoClient(sagoConnString);
-    await sagoClient.connect();
-    const chatCollection = sagoClient.db("sago_db").collection("chat");
+    // Fetch all chat sessions for this profile
+    const chatSessions = await chatSessionsCollection.find({
+      subjectID: new ObjectId(profileID)
+    }).sort({ sessionDate: 1 }).toArray();
 
-    // Fetch conversations for the user
-    const conversationRecords = await chatCollection.find({
-      user_id: userId,
-      bot_id: BOT_ID
-    }).toArray();
-
-    console.log(`Found ${conversationRecords.length} conversation messages for user ${userId}`);
-
-    if (conversationRecords.length === 0) {
+    if (chatSessions.length === 0) {
       return {
         error: true,
-        message: 'No conversations found for this user'
+        message: 'No chat sessions found for this profile'
       };
     }
 
-    // Format the conversation
-    const conversation = formatConversation(conversationRecords);
+    // Extract all messages from chat sessions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allMessages: any[] = [];
+    chatSessions.forEach(session => {
+      if (session.messages && Array.isArray(session.messages)) {
+        session.messages.forEach(msg => {
+          allMessages.push({
+            timestamp: msg.timestamp,
+            role: msg.role,
+            content: msg.content,
+            contentType: msg.contentType
+          });
+        });
+      }
+    });
+
+    // Sort messages by timestamp
+    allMessages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    if (allMessages.length === 0) {
+      return {
+        error: true,
+        message: 'No messages found in chat sessions'
+      };
+    }
+
+    // Format the conversation for analysis
+    const conversation = formatConversation(allMessages);
 
     // Generate the current date in the required format (MM.DD.YYYY)
     const today = new Date();
@@ -352,9 +346,7 @@ export async function updateUserAnalysis(userId: string) {
       ]
     });
 
-    console.log(`Claude API response: ${message}`);
-
-    // Process the response - updated to extract JSON
+    // Process the response
     let responseText = '';
     if (message.content[0].type === 'text') {
       responseText = message.content[0].text;
@@ -362,161 +354,120 @@ export async function updateUserAnalysis(userId: string) {
       // Remove backticks and "json" word
       responseText = responseText.replace(/`/g, '').replace(/json/g, "");
 
-      // Try to extract JSON content (looking for object between curly braces)
+      // Try to extract JSON content
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         responseText = jsonMatch[0];
-        // console.log('Extracted JSON:', responseText);
 
         try {
-          // Log a small sample of the extracted JSON for debugging
-          console.log(`JSON sample (first 100 chars): ${responseText.substring(0, 100)}...`);
-          
           // Parse the JSON response
-          // const userData = JSON.parse(responseText);
+          const analysisData = JSON.parse(responseText);
           
-          // Rest of your code for processing the userData...
-          
-        } catch (parseError) {
-          console.error('Original JSON parsing error:', parseError);
-          
-          // Log the position where parsing failed
-          if (parseError instanceof SyntaxError) {
-            const errorMatch = parseError.message.match(/position (\d+)/);
-            const position = errorMatch ? parseInt(errorMatch[1]) : -1;
-            
-            if (position > 0) {
-              // Show the problematic part of the JSON (20 chars before and after the error position)
-              const start = Math.max(0, position - 20);
-              const end = Math.min(responseText.length, position + 20);
-              console.error(`JSON error near: ...${responseText.substring(start, position)}[ERROR HERE]${responseText.substring(position, end)}...`);
+          // Create the analysis document
+          const analysisDocument = {
+            subjectID: new ObjectId(profileID),
+            lastUpdated: new Date(),
+            completeAnalysis: {
+              ...analysisData,
+              lastUpdated: formattedDate,
+              conversationCount: allMessages.length,
+              generatedAt: new Date().toISOString()
             }
+          };
+
+          // Update or insert the analysis
+          const result = await analysesCollection.updateOne(
+            { subjectID: new ObjectId(profileID) },
+            { $set: analysisDocument },
+            { upsert: true }
+          );
+
+          if (result.modifiedCount > 0) {
+            // Analysis updated
+          } else if (result.upsertedCount > 0) {
+            // Analysis created
           }
-          
-          // Try applying some common JSON fixes
-          try {
-            let fixedJson = responseText.replace(/'/g, '"');
-  
-            // Fix 2: Try fixing trailing commas before closing brackets
-            fixedJson = fixedJson.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
-            
-            // Fix 3: Try fixing missing quotes around property names
-            fixedJson = fixedJson.replace(/(\{|\,)\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-            
-            // Fix 4: Handle nested quotes in string values
-            // This regex looks for quotes between other quotes and escapes them
-            fixedJson = fixedJson.replace(/"([^"]*)"([^"]*)"([^"]*)"/g, function(match, p1, p2, p3) {
-              return '"' + p1 + '\\"' + p2 + '\\"' + p3 + '"';
-            });
-            
-            // Fix 5: Replace problematic emojis with their description
-            // This is a simple approach - emoji replacement
-            fixedJson = fixedJson.replace(/[\u{1F600}-\u{1F64F}]/gu, "[emoji]");  // emotion emojis
-            fixedJson = fixedJson.replace(/[\u{1F300}-\u{1F5FF}]/gu, "[symbol]"); // symbols & pictographs
-            fixedJson = fixedJson.replace(/[\u{1F680}-\u{1F6FF}]/gu, "[transport]"); // transport & map symbols
-            fixedJson = fixedJson.replace(/[\u{2600}-\u{26FF}]/gu, "[misc]"); // misc symbols
-            fixedJson = fixedJson.replace(/[\u{2700}-\u{27BF}]/gu, "[dingbats]"); // dingbats
-            
-            console.log("Attempting to parse fixed JSON...");
-            const userData = JSON.parse(fixedJson);
-            
-            console.log("Successfully parsed JSON after applying fixes");
-            
-            // Remove userID from Claude's response to avoid conflicts
-            delete userData.userID;
-            
-            // Continue with the fixed userData
-            // Remove userID from Claude's response to avoid conflicts
-            delete userData.userID;
-            
-            // Rest of your processing code...
-            
-          } catch (fixError) {
-            // If all fixes fail, return the error
-            console.error('Failed to fix JSON parsing issues:', fixError);
+
+          // Fetch the updated profile details
+          const timestamp = new Date().getTime();
+          const updatedProfileData = await fetchUserDetails(profileID, true);
+
+          if (
+            !updatedProfileData ||
+            (typeof updatedProfileData === 'object' &&
+              updatedProfileData !== null &&
+              'error' in updatedProfileData &&
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (updatedProfileData as any).error)
+          ) {
             return {
               error: true,
-              message: 'Invalid JSON format received from analysis service'
+              message: 'Analysis was updated but profile data could not be retrieved'
+            };
+          }
+
+          return {
+            success: true,
+            data: updatedProfileData,
+            timestamp: timestamp
+          };
+
+        } catch {
+          // Try some basic JSON fixes
+          try {
+            let fixedJson = responseText.replace(/'/g, '"');
+            fixedJson = fixedJson.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
+            
+            const fixedAnalysisData = JSON.parse(fixedJson);
+            
+            // Proceed with the fixed data
+            const analysisDocument = {
+              subjectID: new ObjectId(profileID),
+              lastUpdated: new Date(),
+              completeAnalysis: {
+                ...fixedAnalysisData,
+                lastUpdated: formattedDate,
+                conversationCount: allMessages.length,
+                generatedAt: new Date().toISOString()
+              }
+            };
+
+            await analysesCollection.updateOne(
+              { subjectID: new ObjectId(profileID) },
+              { $set: analysisDocument },
+              { upsert: true }
+            );
+
+            const updatedProfileData = await fetchUserDetails(profileID, true);
+            
+            return {
+              success: true,
+              data: updatedProfileData,
+              timestamp: new Date().getTime()
+            };
+
+          } catch {
+            return {
+              error: true,
+              message: 'Failed to process analysis results'
             };
           }
         }
-
       } else {
-        console.error('No valid JSON object found in response');
-        console.log('Response content:', responseText);
         return {
           error: true,
-          message: 'Invalid format received from analysis service'
+          message: 'Invalid response format from analysis service'
         };
       }
     }
 
-    try {
-      // Parse the JSON response
-      const userData = JSON.parse(responseText);
-      
-      // Remove userID from Claude's response to avoid conflicts
-      delete userData.userID;
-      
-      // Create the object with Claude data first, then override specific fields
-      const userDataToSave = {
-        ...userData,  // Put Claude data first
-        userID: userId,  // Then override with correct values
-        lastUpdated: formattedDate,
-        conversationCount: conversationRecords.length
-      };
-      
-      // console.log(`Final userID before database update: ${userDataToSave.userID}`);
-      
-      // Simplify the update operation - remove $setOnInsert
-      const result = await userCollection.updateOne(
-        { userID: userId },  // Filter by the correct userID
-        { $set: userDataToSave },  // Just use $set without $setOnInsert
-        { upsert: true }
-      );
-      
-      if (result.modifiedCount > 0) {
-        console.log(`Updated existing user: ${userId}`);
-      } else if (result.upsertedCount > 0) {
-        console.log(`Inserted new user: ${userId}`);
-      }
-
-      // Fetch the updated user details to return
-      const timestamp = new Date().getTime(); // Add timestamp for cache busting
-      const updatedUserData = await fetchUserDetails(userId, true); // Add a forceRefresh parameter
-      
-      if (!updatedUserData) {
-        console.error('Updated user data could not be retrieved');
-        return {
-          error: true,
-          message: 'User data was updated but could not be retrieved'
-        };
-      }
-      
-      console.log('Successfully retrieved updated user data');
-      
-      return {
-        success: true,
-        data: updatedUserData,
-        timestamp: timestamp // Add timestamp to response
-      };
-    } catch (parseError) {
-      console.error('Error parsing Claude API response:', parseError);
-      return {
-        error: true,
-        message: 'Failed to process analysis results'
-      };
-    }
-
-  } catch (error) {
-    console.error('Error updating user analysis:', error);
+  } catch {
     return {
       error: true,
-      message: 'Failed to update user analysis'
+      message: 'Failed to update profile analysis'
     };
   } finally {
-    // Close MongoDB connections
-    if (ctbotClient) await ctbotClient.close();
-    if (sagoClient) await sagoClient.close();
+    // Close MongoDB connection
+    if (client) await client.close();
   }
 }

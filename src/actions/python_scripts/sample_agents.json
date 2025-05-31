@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Alethia Assistant",
+    "aiModel": "claude-3-5-sonnet-20241022",
+    "prompt": "You are Alethia, a helpful AI assistant specialized in psychological analysis and support.",
+    "phone": "+1234567890",
+    "socialID": "alethia_bot",
+    "activeStatus": true,
+    "icon": "https://aldous-dummy-uploads.s3.us-east-1.amazonaws.com/icons/alethia.png"
+  },
+  {
+    "name": "Support Agent",
+    "aiModel": "gpt-4o",
+    "prompt": "You are a customer support agent providing assistance to users.",
+    "phone": "+1987654321",
+    "activeStatus": true,
+    "assignedClients": [],
+    "profiles": []
+  },
+  {
+    "name": "Research Bot",
+    "aiModel": "gemini-1.5-pro",
+    "prompt": "You are a research assistant helping with data analysis and insights.",
+    "socialID": "research_bot_twitter",
+    "activeStatus": false
+  }
+]

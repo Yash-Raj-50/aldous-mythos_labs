@@ -1,6 +1,7 @@
 'use server'
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
+import { Message } from '@/types/databaseTypes';
 
 // Helper function to safely serialize MongoDB objects
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,22 +34,7 @@ function serializeMongoObject(obj: any): any {
       // Skip the internal _id field or convert it to string
       if (key === '_id') {
         serialized.id = String(value);
-      } 
-      // Special handling for conversation data to ensure proper format
-      else if (key === 'conversation' && Array.isArray(value)) {
-        serialized[key] = value.map(msg => ({
-          role: msg.role || 'user',
-          content: msg.content || '',
-          timestamp: msg.timestamp 
-            ? typeof msg.timestamp === 'string' 
-              ? msg.timestamp 
-              : msg.timestamp instanceof Date 
-                ? msg.timestamp.toISOString() 
-                : new Date().toISOString()
-            : new Date().toISOString()
-        }));
-      } 
-      else {
+      } else {
         serialized[key] = serializeMongoObject(value);
       }
     }
@@ -60,142 +46,295 @@ function serializeMongoObject(obj: any): any {
   return obj;
 }
 
-// Format conversation data from new cluster format
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function formatNewClusterMessages(messages: any[] | undefined) {
-  if (!messages || !Array.isArray(messages)) {
-    return [];
-  }
-  
-  return messages.map(msg => {
-    // Extract content text from the content array
-    let contentText = '';
-    if (Array.isArray(msg.content) && msg.content.length > 0) {
-      // Define the content item structure
-      interface ContentItem {
-        type: string;
-        text?: string;
-      }
-      
-      const textContent = msg.content.find((item: ContentItem) => item.type === 'text');
-      contentText = textContent ? textContent.text : '';
-    }
-    
-    // Convert timestamp to ISO string
-    let timestamp = new Date().toISOString();
-    if (msg.timestamp && msg.timestamp.$date && msg.timestamp.$date.$numberLong) {
-      // Convert MongoDB timestamp format to ISO string
-      const timestampMs = parseInt(msg.timestamp.$date.$numberLong, 10);
-      if (!isNaN(timestampMs)) {
-        timestamp = new Date(timestampMs).toISOString();
-      }
-    }
-    
-    return {
-      role: msg.role || 'user',
-      content: contentText || '',
-      timestamp: timestamp
-    };
-  }).sort((a, b) => {
-    // Sort by timestamp (oldest first)
-    return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-  });
-}
-
-export async function fetchUserDetails(userID: string, forceRefresh = false) {
-  console.log(`Attempting to connect to MongoDB for user ${userID}`);
-    // Create a unique client instance for each request when forceRefresh is true
-  // This avoids potential connection caching issues
+export async function fetchUserDetails(profileID: string, forceRefresh = false) {
+  // Create a unique client instance for each request when forceRefresh is true
   const clientOptions = forceRefresh ? { connectTimeoutMS: 5000 } : {};
+  
   try {
     // Get MongoDB credentials from environment variables
     const MONGODB_USERNAME = process.env.NEXT_PUBLIC_MONGODB_USERNAME;
     const MONGODB_PASSWORD = process.env.NEXT_PUBLIC_MONGODB_PASSWORD;
     
-    console.log(`Attempting to connect to MongoDB for user ${userID}`);
-    
     if (!MONGODB_USERNAME || !MONGODB_PASSWORD) {
-      console.error('MongoDB credentials missing in environment variables');
       throw new Error('MongoDB credentials missing in environment variables');
     }
     
-    // Connect to primary MongoDB (ctbot cluster)
-    const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@ctbot.5vx6h.mongodb.net/?retryWrites=true&w=majority&appName=CTBot`;
+    // Connect to aldous_db database
+    const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/?retryWrites=true&w=majority&appName=ClusterAustraliaFlex`;
     const client = new MongoClient(uri, clientOptions);
     
-    // Connect to chat MongoDB (clusteraustraliaflex)
-    const chatUri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/`;
-    const chatClient = new MongoClient(chatUri, clientOptions);
-    
-    if (forceRefresh) {
-      console.log(`Force refreshing user data for ${userID}`);
-    }
-    
     try {
-      // Connect to both clusters
-      await Promise.all([client.connect(), chatClient.connect()]);
-      console.log(`Connected to MongoDB successfully for user ${userID}`);
+      await client.connect();
       
-      // Fetch user data from primary cluster
-      const db = client.db("user-chat");
-      const collection = db.collection("users_simulated");
-      const user = await collection.findOne({ userID: userID });
+      const db = client.db("aldous_db");
       
-      if (!user) {
-        console.error(`User with ID ${userID} not found in database`);
-        return null;
+      // Fetch profile data
+      const profilesCollection = db.collection("profiles");
+      
+      // Validate and create ObjectId
+      let profileObjectId;
+      try {
+        profileObjectId = new ObjectId(profileID);
+      } catch {
+        return { 
+          error: true, 
+          message: `Invalid profile ID format: ${profileID}`,
+          profileID 
+        };
       }
       
-      console.log(`Found user data for ${userID}`);
-      // Serialize the user object
-      const serializedUser = serializeMongoObject(user);
+      const profile = await profilesCollection.findOne({ _id: profileObjectId });
       
-      // Now fetch conversation messages from clusteraustraliaflex
-      const chatDb = chatClient.db("sago_db");
-      const chatCollection = chatDb.collection("chat");
+      if (!profile) {
+        return { 
+          error: true, 
+          message: `Profile with ID ${profileID} not found`,
+          profileID 
+        };
+      }
       
-      // Query chat messages for this user - use the exact same userID without modification
-      const chatMessages = await chatCollection.find({ 
-        user_id: userID  // No prefix, match exactly as stored
-      }).toArray();
+      // Fetch analysis data for this profile
+      const analysesCollection = db.collection("analyses");
+      const analysis = await analysesCollection.findOne({ 
+        $or: [
+          { subjectID: profileID }, // String format
+          { subjectID: new ObjectId(profileID) } // ObjectId format
+        ]
+      });
       
-      console.log(`Fetched ${chatMessages.length} chat messages from clusteraustraliaflex for user ${userID}`);
+      // Fetch chat sessions for this profile
+      const chatSessionsCollection = db.collection("chatsessions");
+      const chatSessions = await chatSessionsCollection.find({ 
+        $or: [
+          { subjectID: profileID }, // String format
+          { subjectID: new ObjectId(profileID) } // ObjectId format
+        ]
+      }).sort({ sessionDate: 1 }).toArray();
       
-      // Format chat messages to match our conversation format
-      const formattedMessages = formatNewClusterMessages(chatMessages);
+      // Serialize all data
+      const serializedProfile = serializeMongoObject(profile);
+      const serializedAnalysis = analysis ? serializeMongoObject(analysis) : null;
+      const serializedChatSessions = chatSessions.map(session => serializeMongoObject(session));
       
-      // Replace the conversation field with new messages
-      serializedUser.conversation = formattedMessages;
+      // Extract all messages from chat sessions and flatten them
+      const allMessages: Message[] = [];
+      serializedChatSessions.forEach(session => {
+        if (session.messages && Array.isArray(session.messages)) {
+          session.messages.forEach((msg: Message) => {
+            allMessages.push({
+              timestamp: msg.timestamp,
+              role: msg.role,
+              contentType: msg.contentType,
+              content: msg.content
+            });
+          });
+        }
+      });
       
-      // Format dates
-      serializedUser.lastUpdated = serializedUser.lastUpdated 
-        ? new Date(serializedUser.lastUpdated).toLocaleDateString() 
-        : new Date().toLocaleDateString();
+      // Sort messages by timestamp
+      allMessages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      
+      // Extract complete analysis data for easier access
+      const completeAnalysis = serializedAnalysis?.completeAnalysis;
+      
+      // Helper function to map new analysis structure to old expected format
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mapAnalysisData = (analysis: any) => {
+        if (!analysis) return null;
+        
+        // Map psychological needs from new structure to old array format
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapPsychologicalNeeds = (needs: any) => {
+          if (!needs) return [];
+          
+          // If needs is already an array, return it directly
+          if (Array.isArray(needs)) {
+            return needs;
+          }
+          
+          // Otherwise, treat it as an object and convert to array
+          const needsArray = [];
+          if (needs.identity) {
+            needsArray.push({
+              need: "IDENTITY_BELONGING",
+              quote: needs.identity.evidence || "No evidence provided",
+              size: needs.identity.score > 70 ? "LARGE" : "MEDIUM",
+              color: "BLUE"
+            });
+          }
+          if (needs.belonging) {
+            needsArray.push({
+              need: "IDENTITY_BELONGING", 
+              quote: needs.belonging.evidence || "No evidence provided",
+              size: needs.belonging.score > 70 ? "LARGE" : "MEDIUM",
+              color: "TEAL"
+            });
+          }
+          if (needs.purpose) {
+            needsArray.push({
+              need: "PURPOSE_MEANING",
+              quote: needs.purpose.evidence || "No evidence provided", 
+              size: needs.purpose.score > 70 ? "LARGE" : "MEDIUM",
+              color: "ORANGE"
+            });
+          }
+          if (needs.significance) {
+            needsArray.push({
+              need: "AGENCY_POWER",
+              quote: needs.significance.evidence || "No evidence provided",
+              size: needs.significance.score > 70 ? "LARGE" : "MEDIUM", 
+              color: "RED"
+            });
+          }
+          return needsArray;
+        };
 
-      serializedUser.created = serializedUser.created
-        ? new Date(serializedUser.created).toLocaleDateString()
-        : new Date().toLocaleDateString();
+        // Map emotional state from new structure to old array format
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapEmotionalState = (emotional: any) => {
+          if (!emotional) return [];
+          
+          // If emotional is already an array, return it directly
+          if (Array.isArray(emotional)) {
+            return emotional;
+          }
+          
+          // Otherwise, treat it as an object and convert to array
+          const emotions = emotional.primaryEmotions || [];
+          return emotions.map((emotion: string, index: number) => ({
+            emotion: emotion.toUpperCase(),
+            strength: index === 0 ? "HIGH" : "MEDIUM", // First emotion is strongest
+            underlyingDrivers: emotional.emotionalTriggers?.slice(0, 3) || ["Unspecified drivers"]
+          }));
+        };
 
-      return serializedUser;
+        // Map intervention effectiveness to match expected structure
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapInterventionEffectiveness = (intervention: any) => {
+          if (!intervention) {
+            return {
+              openQuestions: { score: 50, assessment: "MIXED" },
+              addressingGrievances: { score: 50, assessment: "MIXED" },
+              emotionalValidation: { score: 50, assessment: "MIXED" },
+              alternativeNarratives: { score: 50, assessment: "MIXED" },
+              directChallenges: { score: 50, assessment: "MIXED" },
+              engagementTrend: { dataPoints: [] }
+            };
+          }
+
+          return {
+            openQuestions: {
+              score: intervention.openQuestions?.score || 50,
+              assessment: intervention.openQuestions?.assessment || "MIXED"
+            },
+            addressingGrievances: {
+              score: intervention.addressingGrievances?.score || 50,
+              assessment: intervention.addressingGrievances?.assessment || "MIXED",
+              isFocus: intervention.addressingGrievances?.isFocus || false
+            },
+            emotionalValidation: {
+              score: intervention.emotionalValidation?.score || intervention.buildingRapport?.score || 50,
+              assessment: intervention.emotionalValidation?.assessment || intervention.buildingRapport?.assessment || "MIXED"
+            },
+            alternativeNarratives: {
+              score: intervention.alternativeNarratives?.score || intervention.challengingBeliefs?.score || 50,
+              assessment: intervention.alternativeNarratives?.assessment || intervention.challengingBeliefs?.assessment || "MIXED"
+            },
+            directChallenges: {
+              score: intervention.directChallenges?.score || intervention.challengingBeliefs?.score || 50,
+              assessment: intervention.directChallenges?.assessment || intervention.challengingBeliefs?.assessment || "MIXED",
+              isAvoid: intervention.directChallenges?.isAvoid || intervention.challengingBeliefs?.isFocus === false
+            },
+            engagementTrend: {
+              dataPoints: intervention.engagementTrend?.dataPoints || []
+            }
+          };
+        };
+
+        return {
+          executiveSummary: analysis.executiveSummary || {
+            summary: "No analysis available",
+            riskLevel: "LOW"
+          },
+          radicalizationStage: {
+            stage: analysis.radicalizationStage?.stage || "CURIOSITY",
+            evidence: analysis.radicalizationStage?.evidence || [],
+            explanation: Array.isArray(analysis.radicalizationStage?.explanation) 
+              ? analysis.radicalizationStage.explanation 
+              : (analysis.radicalizationStage?.explanation 
+                ? [analysis.radicalizationStage.explanation] 
+                : ["No evidence available"])
+          },
+          riskFactors: analysis.riskFactors || [],
+          interventionEffectiveness: mapInterventionEffectiveness(analysis.interventionEffectiveness),
+          inflectionPoints: analysis.inflectionPoints || [],
+          psychologicalNeeds: mapPsychologicalNeeds(analysis.psychologicalNeeds),
+          emotionalState: mapEmotionalState(analysis.emotionalState),
+          recommendedApproaches: analysis.recommendedApproaches || {
+            primaryStrategy: ["No recommendations available"],
+            specificTactics: ["No tactics available"],
+            approachesToAvoid: ["No approaches to avoid specified"]
+          }
+        };
+      };
+
+      // Map the analysis data
+      const mappedAnalysis = mapAnalysisData(completeAnalysis);
+
+      // Prepare the user data object
+      const userData = {
+        id: serializedProfile.id,
+        name: serializedProfile.name,
+        country: serializedProfile.country,
+        phone: serializedProfile.phone,
+        profilePic: serializedProfile.profilePic,
+        socialIDs: serializedProfile.socialIDs || [],
+        assignedAgentID: serializedProfile.assignedAgentID,
+        lastUpdated: serializedAnalysis?.lastUpdated || serializedProfile.updatedAt || new Date().toISOString(),
+        createdAt: serializedProfile.createdAt || new Date().toISOString(),
+        
+        // Analysis data - use mapped analysis if available, fallback to defaults
+        analysis: serializedAnalysis,
+        completeAnalysis: completeAnalysis,
+        
+        // Dashboard component data - mapped from new analysis structure
+        ...(mappedAnalysis || {}),
+        
+        // Chat data
+        chatSessions: serializedChatSessions,
+        conversation: allMessages, // For backward compatibility
+        conversationCount: allMessages.length,
+        
+        // Formatted dates for display
+        lastUpdatedFormatted: serializedAnalysis?.lastUpdated 
+          ? new Date(serializedAnalysis.lastUpdated).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            })
+          : 'N/A',
+        createdFormatted: serializedProfile.createdAt
+          ? new Date(serializedProfile.createdAt).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric' 
+            })
+          : 'N/A',
+      };
+
+      return userData;
       
     } catch (dbError: unknown) {
-      console.error(`MongoDB connection or query error: ${dbError instanceof Error ? dbError.message : String(dbError)}`);
       throw dbError;
     } finally {
-      // Close both connections
-      await Promise.all([
-        client.close().catch(() => {}),
-        chatClient.close().catch(() => {})
-      ]);
+      await client.close().catch(() => {});
     }
     
   } catch (error) {
-    console.error(`Error in fetchUserDetails for user ${userID}:`, error);
-    // Return a more informative error object instead of null
     return { 
       error: true, 
       message: error instanceof Error ? error.message : 'Unknown error occurred',
-      userID 
+      profileID 
     };
   }
 }

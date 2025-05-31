@@ -1,0 +1,39 @@
+[
+  {
+    "subjectID": "674b5a1234567890abcdef01",
+    "lastUpdated": "2025-05-29T10:30:00.000Z",
+    "completeAnalysis": {
+      "emotional_state": {
+        "primary_emotion": "anxiety",
+        "intensity": 7,
+        "triggers": ["work stress", "social situations"]
+      },
+      "psychological_assessment": {
+        "risk_level": "moderate",
+        "coping_mechanisms": ["breathing exercises", "journaling"],
+        "recommendations": ["professional therapy", "stress management techniques"]
+      },
+      "conversation_insights": {
+        "session_count": 5,
+        "engagement_level": "high",
+        "progress_indicators": ["improved self-awareness", "better emotional regulation"]
+      }
+    }
+  },
+  {
+    "subjectID": "674b5a1234567890abcdef03",
+    "lastUpdated": "2025-05-29T14:15:00.000Z", 
+    "completeAnalysis": {
+      "emotional_state": {
+        "primary_emotion": "overwhelm",
+        "intensity": 6,
+        "triggers": ["work deadlines", "family responsibilities"]
+      },
+      "psychological_assessment": {
+        "risk_level": "low",
+        "coping_mechanisms": ["time management", "delegation"],
+        "recommendations": ["stress reduction techniques", "work-life balance"]
+      }
+    }
+  }
+]

@@ -1,0 +1,150 @@
+{ 
+  "executiveSummary": {
+    "summary": "Subject displays early signs of extremist ideology adoption through increasingly isolationist viewpoints and expressions of grievance against perceived social inequalities. Their online behavior shows a pattern of seeking validation for militant perspectives.",
+    "riskLevel": "MEDIUM"
+  },
+  
+  "radicalizationStage": {
+    "stage": "SYMPATHY",
+    "evidence": [
+      {
+        "quote": "Sometimes I feel like violence is the only language they understand. Nothing else seems to work.",
+        "significance": "Shows increasing justification for extreme measures and binary worldview"
+      },
+      {
+        "quote": "I've been reading a lot about how these groups actually make sense once you understand their perspective.",
+        "significance": "Demonstrates growing sympathy for extremist narratives"
+      }
+    ],
+    "explanation": "• Growing alignment with extremist ideology but still engaging in normal social activities\n• Increased consumption of radical content while trying to rationalize perspectives\n• Beginning to express grievances using language from radical narratives"
+  },
+  
+  "riskFactors": [
+    "Social isolation intensifying in past 3 months",
+    "Recent job loss creating financial stress",
+    "Expressed feelings of societal betrayal and injustice",
+    "Growing online engagement with radical communities"
+  ],
+  
+  "interventionEffectiveness": {
+    "openQuestions": {
+      "score": 72,
+      "assessment": "MODERATELY POSITIVE"
+    },
+    "addressingGrievances": {
+      "score": 65,
+      "assessment": "MODERATELY POSITIVE",
+      "isFocus": true
+    },
+    "emotionalValidation": {
+      "score": 81,
+      "assessment": "POSITIVE"
+    },
+    "alternativeNarratives": {
+      "score": 45,
+      "assessment": "MIXED"
+    },
+    "directChallenges": {
+      "score": 23,
+      "assessment": "NEGATIVE",
+      "isAvoid": true
+    },
+    "engagementTrend": {
+      "dataPoints": [
+        {
+          "timestamp": "04/15/2023 14:22",
+          "level": "LOW",
+          "event": "Initial conversation, defensive posture"
+        },
+        {
+          "timestamp": "04/28/2023 16:45",
+          "level": "HIGH",
+          "event": "Shared personal grievances after validation approach"
+        },
+        {
+          "timestamp": "05/10/2023 10:18",
+          "level": "MEDIUM",
+          "event": "Deep engagement on identity topics after emotional validation"
+        }
+      ]
+    }
+  },
+  
+  "inflectionPoints": [
+    {
+      "timestamp": "04/22/2023 18:34",
+      "quote": "I'm just trying to understand why no one is talking about what's really happening to people like me.",
+      "significance": "First expression of perceived victimhood and hidden truths narrative",
+      "type": "INITIAL_INTENT"
+    },
+    {
+      "timestamp": "04/30/2023 20:15",
+      "quote": "When my brother lost his job and couldn't feed his kids, that's when I realized the system is rigged against us.",
+      "significance": "Personal trauma connected to broader ideological frame",
+      "type": "EMOTIONAL_DRIVER"
+    },
+    {
+      "timestamp": "05/08/2023 13:42",
+      "quote": "If they're allowed to use force to control us, why shouldn't we defend ourselves the same way?",
+      "significance": "Moral justification for potential violence emerging",
+      "type": "JUSTIFICATION"
+    }
+  ],
+  
+  "psychologicalNeeds": [
+    {
+      "need": "JUSTICE/REVENGE",
+      "quote": "Someone needs to make them pay for what they've done to our communities.",
+      "size": "LARGE",
+      "color": "RED"
+    },
+    {
+      "need": "IDENTITY/BELONGING",
+      "quote": "These are the only people who understand what we're going through.",
+      "size": "LARGE",
+      "color": "BLUE"
+    },
+    {
+      "need": "PURPOSE/MEANING",
+      "quote": "I want to be part of something that actually changes things, not just talk.",
+      "size": "MEDIUM",
+      "color": "TEAL"
+    }
+  ],
+  
+  "emotionalState": [
+    {
+      "emotion": "ANGER",
+      "strength": "HIGH",
+      "underlyingDrivers": ["Perceived systematic injustice", "Personal economic hardship"]
+    },
+    {
+      "emotion": "FRUSTRATION",
+      "strength": "HIGH",
+      "underlyingDrivers": ["Perceived inability to effect change", "Social rejection"]
+    },
+    {
+      "emotion": "DEFENSIVENESS",
+      "strength": "MEDIUM",
+      "underlyingDrivers": ["Identity threat", "Fear of judgment"]
+    }
+  ],
+  
+  "recommendedApproaches": {
+    "primaryStrategy": [
+      "Build rapport through validating feelings without validating conclusions",
+      "Focus on personal narrative and identity separate from radical ideology",
+      "Introduce measured complexity to binary worldview through examples"
+    ],
+    "specificTactics": [
+      "Use open questions about personal aspirations and past positive community experiences",
+      "Explore familial relationships as potential protective factors",
+      "Gradually introduce moderate voices from their identified in-group"
+    ],
+    "approachesToAvoid": [
+      "Direct challenging of ideological statements which triggers defensiveness",
+      "Moral lecturing which reinforces alienation narrative",
+      "Dismissing legitimate grievances which undermines credibility"
+    ]
+  }
+}

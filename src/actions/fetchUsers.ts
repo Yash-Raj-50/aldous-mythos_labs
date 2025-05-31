@@ -53,41 +53,37 @@ export async function fetchUsers(): Promise<{ data: UserListData[] }> {
       throw new Error('MongoDB credentials missing in environment variables');
     }
     
-    // Connect to MongoDB
-    const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@ctbot.5vx6h.mongodb.net/?retryWrites=true&w=majority&appName=CTBot`;
+    // Connect to aldous_db instead of old database
+    const uri = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@clusteraustraliaflex.fycsf67.mongodb.net/?retryWrites=true&w=majority&appName=ClusterAustraliaFlex`;
     const client = new MongoClient(uri);
     
     await client.connect();
-    console.log('Connected to MongoDB successfully');
     
-    const db = client.db("user-chat");
-    const collection = db.collection("users_simulated");
+    const db = client.db("aldous_db");
+    const collection = db.collection("profiles");
     
-    // Only fetch the fields we need for the list view
-    const users = await collection.find({}).project({
-      userID: 1,
+    // Fetch all profiles from aldous_db
+    const profiles = await collection.find({}).project({
+      _id: 1,
       name: 1,
-      "executiveSummary.riskLevel": 1,
-      lastActive: 1
+      country: 1,
+      createdAt: 1,
+      updatedAt: 1
     }).toArray();
     
     // Close the connection
     await client.close();
     
-    // Format the user data for the list view
-    const formattedUsers = users.map(user => ({
-      userID: user.userID || (user._id ? user._id.toString() : String(Math.random()).substring(2, 8)),
-      name: user.name || `User ${user.userID || ''}`,
-      riskLevel: user.executiveSummary?.riskLevel || 'LOW',
-      lastActive: formatDate(user.lastActive || new Date())
+    // Format the profile data for the list view
+    const formattedUsers = profiles.map(profile => ({
+      userID: profile._id.toString(),
+      name: profile.name || 'Unknown Profile',
+      riskLevel: 'LOW' as const, // Default risk level since we don't have analysis here
+      lastActive: formatDate(profile.updatedAt || profile.createdAt || new Date())
     }));
     
-    // console.log('Formatted users for list view:', formattedUsers);
-    console.log(`Fetched ${formattedUsers.length} users for list view`);
-    
     return { data: formattedUsers };
-  } catch (error) {
-    console.error('Error fetching users from MongoDB:', error);
+  } catch {
     // Return empty data in case of error
     return { data: [] };
   }

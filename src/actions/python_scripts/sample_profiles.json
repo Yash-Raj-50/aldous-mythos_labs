@@ -1,0 +1,21 @@
+[
+  {
+    "name": "John Doe",
+    "country": "United States",
+    "phone": "+1234567890",
+    "profilePic": "https://aldous-dummy-uploads.s3.us-east-1.amazonaws.com/profiles/john_doe.jpg",
+    "socialIDs": ["john_doe_twitter", "john.doe.fb"]
+  },
+  {
+    "name": "Jane Smith", 
+    "country": "Canada",
+    "phone": "+1987654321",
+    "socialIDs": ["jane_smith_insta"]
+  },
+  {
+    "name": "Alice Johnson",
+    "country": "United Kingdom", 
+    "phone": "+44123456789",
+    "socialIDs": ["alice_johnson_linkedin"]
+  }
+]

@@ -10,6 +10,7 @@ import {
   Legend 
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { Profile, Analysis } from '@/types/databaseTypes'; // Import types
 
 // Register Chart.js components
 ChartJS.register(
@@ -22,16 +23,22 @@ ChartJS.register(
 );
 
 interface RiskDistributionProps {
-  data: {
-    userID: string;
-    riskLevel: string;
-    lastActive: string;
-  }[];
+  profiles: Profile[]; // Use Profile[]
+  analyses: Record<string, Analysis | null>; // Use Record<string, Analysis | null>
 }
 
-const RiskDistribution = ({ data }: RiskDistributionProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [chartData, setChartData] = useState<any>(null);
+const RiskDistribution = ({ profiles, analyses }: RiskDistributionProps) => {
+  const [chartData, setChartData] = useState<{
+    labels: string[];
+    datasets: Array<{
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+      borderColor: string[];
+      borderWidth: number;
+      borderRadius: number;
+    }>;
+  } | null>(null);
 
   useEffect(() => {
     // Count risk levels - add MEDIUM-HIGH
@@ -42,10 +49,22 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
       LOW: 0
     };
 
-    // Count occurrences of each risk level
-    data.forEach(item => {
-      if (riskCounts.hasOwnProperty(item.riskLevel)) {
-        riskCounts[item.riskLevel as keyof typeof riskCounts]++;
+    // Count occurrences of each risk level based on analyses
+    profiles.forEach(profile => {
+      if (profile.id) {
+        const analysis = analyses[profile.id];
+        if (analysis && analysis.completeAnalysis) {
+          // Example: Determine riskLevel from analysis.completeAnalysis
+          // This logic needs to be robust and match how risk is determined elsewhere
+          let riskLevel = "LOW"; // Default
+          if (analysis.completeAnalysis.someFlag === 'high') riskLevel = "HIGH";
+          else if (analysis.completeAnalysis.someFlag === 'medium-high') riskLevel = "MEDIUM-HIGH";
+          else if (analysis.completeAnalysis.someFlag === 'medium') riskLevel = "MEDIUM";
+          
+          if (riskCounts.hasOwnProperty(riskLevel)) {
+            riskCounts[riskLevel as keyof typeof riskCounts]++;
+          }
+        }
       }
     });
 
@@ -73,15 +92,36 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
         },
       ],
     });
-  }, [data]);
+  }, [profiles, analyses]); // Update dependencies
 
   // Find the maximum count to set the appropriate scale
-  const maxCount = data ? Math.max(
-    data.filter(item => item.riskLevel === 'HIGH').length,
-    data.filter(item => item.riskLevel === 'MEDIUM-HIGH').length,
-    data.filter(item => item.riskLevel === 'MEDIUM').length,
-    data.filter(item => item.riskLevel === 'LOW').length
-  ) : 0;
+  const calculateMaxCount = () => {
+    if (!profiles || !analyses) return 0;
+    const counts = {
+      HIGH: 0,
+      'MEDIUM-HIGH': 0,
+      MEDIUM: 0,
+      LOW: 0
+    };
+    profiles.forEach(profile => {
+      if (profile.id) {
+        const analysis = analyses[profile.id];
+        if (analysis && analysis.completeAnalysis) {
+          let riskLevel = "LOW"; // Default
+          if (analysis.completeAnalysis.someFlag === 'high') riskLevel = "HIGH";
+          else if (analysis.completeAnalysis.someFlag === 'medium-high') riskLevel = "MEDIUM-HIGH";
+          else if (analysis.completeAnalysis.someFlag === 'medium') riskLevel = "MEDIUM";
+
+          if (counts.hasOwnProperty(riskLevel)) {
+            counts[riskLevel as keyof typeof counts]++;
+          }
+        }
+      }
+    });
+    return Math.max(counts.HIGH, counts['MEDIUM-HIGH'], counts.MEDIUM, counts.LOW);
+  };
+  
+  const maxCount = calculateMaxCount();
 
   // Options for the chart - unchanged
   const options = {
@@ -94,8 +134,7 @@ const RiskDistribution = ({ data }: RiskDistributionProps) => {
       },
       tooltip: {
         callbacks: {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          label: function(context: any) {
+          label: function(context: { formattedValue: string }) {
             return `${context.formattedValue} Users`;
           }
         }

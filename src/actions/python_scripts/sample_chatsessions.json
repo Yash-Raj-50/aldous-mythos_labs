@@ -1,0 +1,44 @@
+[
+  {
+    "subjectID": "674b5a1234567890abcdef01",
+    "assignedAgentID": "674b5a1234567890abcdef02", 
+    "agentPlatform": "whatsapp",
+    "agentPlatformID": "whatsapp_bot_001",
+    "language": "English",
+    "sessionDate": "2025-05-29T10:30:00.000Z",
+    "metadata": {
+      "location": "New York, NY",
+      "device": "mobile",
+      "confidence": 0.95
+    },
+    "messages": [
+      {
+        "timestamp": "2025-05-29T10:30:00.000Z",
+        "role": "user",
+        "contentType": "text",
+        "content": "Hello, I need some help with my anxiety."
+      },
+      {
+        "timestamp": "2025-05-29T10:30:30.000Z", 
+        "role": "agent",
+        "contentType": "text",
+        "content": "I understand you're dealing with anxiety. I'm here to help. Can you tell me more about what specific situations trigger your anxiety?"
+      }
+    ]
+  },
+  {
+    "subjectID": "674b5a1234567890abcdef03",
+    "assignedAgentID": "674b5a1234567890abcdef02",
+    "agentPlatform": "telegram",
+    "language": "English", 
+    "sessionDate": "2025-05-29T14:15:00.000Z",
+    "messages": [
+      {
+        "timestamp": "2025-05-29T14:15:00.000Z",
+        "role": "user", 
+        "contentType": "text",
+        "content": "I've been feeling overwhelmed lately."
+      }
+    ]
+  }
+]

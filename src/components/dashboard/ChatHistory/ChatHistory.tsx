@@ -16,8 +16,7 @@ const formatTimestamp = (timestamp: string | undefined) => {
   try {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  } catch (e) {
-    console.error("Error formatting timestamp:", e);
+  } catch {
     return '';
   }
 };
@@ -47,8 +46,7 @@ const formatDate = (timestamp: string | undefined) => {
       day: 'numeric',
       year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
     });
-  } catch (e) {
-    console.error("Error formatting date:", e);
+  } catch {
     return '';
   }
 };

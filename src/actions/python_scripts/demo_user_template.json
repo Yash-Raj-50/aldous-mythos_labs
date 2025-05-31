@@ -1,0 +1,6 @@
+{
+  "username": "enter_username_here",
+  "password": "$2b$10$your_hashed_password_here",
+  "userClass": "client",
+  "profilePic": "optional_s3_url_here"
+}
