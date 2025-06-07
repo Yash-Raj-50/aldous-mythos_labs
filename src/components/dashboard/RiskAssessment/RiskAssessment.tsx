@@ -1,13 +1,16 @@
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface RiskAssessmentProps {
-  data: {
-    "riskLevel": string;
-    "riskFactors": string[];
-  }
+  data?: {
+    "riskLevel"?: string;
+    "riskFactors"?: string[];
+  } | null;
 }
 
 const RiskAssessment = ({data}: RiskAssessmentProps) => {
+  // Provide default values if data is undefined or incomplete
+  const riskLevel = data?.riskLevel || "UNKNOWN";
+  const riskFactors = data?.riskFactors || ["No risk factors available"];
 
   // Helper function to determine risk level index for visualization
   const getRiskLevelIndex = (level: string) => {
@@ -20,7 +23,7 @@ const RiskAssessment = ({data}: RiskAssessmentProps) => {
     }
   };
 
-  const riskLevelIndex = getRiskLevelIndex(data.riskLevel);
+  const riskLevelIndex = getRiskLevelIndex(riskLevel);
 
   return (
     <div className="col-span-2 min-h-[300px] flex flex-col items-start justify-start bg-white rounded shadow-md p-4">
@@ -64,7 +67,7 @@ const RiskAssessment = ({data}: RiskAssessmentProps) => {
         {/* Risk Factors */}
         <div className="p-4 rounded w-full flex flex-col gap-1.5">
           <div className="text-sm font-bold">Risk Factors:</div>
-          {data.riskFactors.map((factor, index) => (
+          {riskFactors.map((factor, index) => (
             <p className="text-sm font-medium" key={index}>• {factor}</p>
           ))}
         </div>

@@ -22,6 +22,8 @@ export async function middleware(request: NextRequest) {
     '/_next', 
     '/images', 
     '/api/auth',
+    '/api/twilio_webhook_whatsapp',
+    '/api/twilio_webhook_fb',
     '/favicon.ico'
   ].some(path => pathname.startsWith(path));
 

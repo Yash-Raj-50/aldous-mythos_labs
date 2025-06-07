@@ -14,11 +14,16 @@ import { uploadAgentIcon } from '@/actions/uploadActions';
 import dummyAgentLogo from '@/assets/dummy_agent_logo.png';
 
 const AI_MODELS = [
-  { value: 'gpt-4o', label: 'OpenAI GPT-4o' },
-  { value: 'gpt-o1', label: 'OpenAI GPT-o1' },
+  // { value: 'gpt-4o', label: 'OpenAI GPT-4o' },
+  // { value: 'gpt-o1', label: 'OpenAI GPT-o1' },
+  { value: 'claude-4-sonnet', label: 'Anthropic Claude 4 Sonnet' },
   { value: 'claude-3.7-sonnet', label: 'Anthropic Claude 3.7 Sonnet' },
   { value: 'claude-3.5-sonnet', label: 'Anthropic Claude 3.5 Sonnet' },
-  { value: 'gemini-2.5', label: 'Google Gemini 2.5 Pro' }
+  // { value: 'gemini-2.5', label: 'Google Gemini 2.5 Pro' }
+];
+
+const PHONE_OPTIONS = [
+  { value: '+12766639185', label: '+1 276 663 9185' }
 ];
 
 const AgentManagement: React.FC = () => {
@@ -414,7 +419,13 @@ const AgentManagement: React.FC = () => {
                   {AI_MODELS.map(m => <MenuItem key={m.value} value={m.value}>{m.label}</MenuItem>)}
                 </Select>
               </FormControl>
-              <TextField label="Phone" name="phone" value={newAgentData.phone || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Social ID is not provided" />
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="phone-label">Phone</InputLabel>
+                <Select labelId="phone-label" name="phone" value={newAgentData.phone || ''} onChange={handleSelectChange} label="Phone">
+                  <MenuItem value="">Select Phone Number</MenuItem>
+                  {PHONE_OPTIONS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
+                </Select>
+              </FormControl>
               <TextField label="Social ID" name="socialID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
             </Box>
           </Box>
@@ -515,7 +526,13 @@ const AgentManagement: React.FC = () => {
                   {AI_MODELS.map(m => <MenuItem key={m.value} value={m.value}>{m.label}</MenuItem>)}
                 </Select>
               </FormControl>
-              <TextField label="Phone" name="phone" value={newAgentData.phone || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Social ID is not provided" />
+              <FormControl fullWidth margin="dense">
+                <InputLabel id="edit-phone-label">Phone</InputLabel>
+                <Select labelId="edit-phone-label" name="phone" value={newAgentData.phone || ''} onChange={handleSelectChange} label="Phone">
+                  <MenuItem value="">Select Phone Number</MenuItem>
+                  {PHONE_OPTIONS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
+                </Select>
+              </FormControl>
               <TextField label="Social ID" name="socialID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
             </Box>
           </Box>

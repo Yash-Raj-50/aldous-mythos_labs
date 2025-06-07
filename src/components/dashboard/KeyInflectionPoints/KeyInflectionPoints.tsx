@@ -1,13 +1,23 @@
 interface KeyInflectionPointsProps {
-  data: {
+  data?: {
     timestamp: string;
     quote: string;
     significance: string;
     type: string;
-  }[];
+  }[] | null;
 }
 
 const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
+  // Safe data access with default values
+  const safeData = data || [
+    {
+      timestamp: "No date",
+      quote: "Analysis pending - no data available yet",
+      significance: "No analysis available",
+      type: "UNKNOWN"
+    }
+  ];
+  
   // Get color based on index position
   const getColor = (index: number, total: number) => {
     const colors = ["#4C6EF5", "#43A047", "#FB8C00", "#E53935"]; // blue, green, orange, red
@@ -25,7 +35,7 @@ const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
             className="relative" 
             style={{ 
               minWidth: '100%',
-              width: data.length > 3 ? `${data.length * 250}px` : '100%',
+              width: safeData.length > 3 ? `${safeData.length * 250}px` : '100%',
               height: '250px'
             }}
           >
@@ -34,7 +44,7 @@ const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
             
             {/* Timeline Points */}
             <div className="absolute top-0 left-0 w-full flex justify-around">
-              {data.map((point, index) => (
+              {safeData.map((point, index) => (
                 <div 
                   key={index} 
                   className="flex flex-col items-center"
@@ -47,7 +57,7 @@ const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
                   <div 
                     className="w-5 h-5 rounded-full z-5"
                     style={{ 
-                      backgroundColor: getColor(index, data.length),
+                      backgroundColor: getColor(index, safeData.length),
                       marginTop: '34px',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}
@@ -56,19 +66,19 @@ const KeyInflectionPoints = ({data}:KeyInflectionPointsProps) => {
                   {/* Connector Line */}
                   <div 
                     className="w-[1px] h-8"
-                    style={{ backgroundColor: getColor(index, data.length) }}
+                    style={{ backgroundColor: getColor(index, safeData.length) }}
                   ></div>
                   
                   {/* Info Box */}
                   <div 
                     className="p-3 rounded-lg shadow-md"
                     style={{ 
-                      backgroundColor: `${getColor(index, data.length)}10`,
-                      border: `1px solid ${getColor(index, data.length)}`,
+                      backgroundColor: `${getColor(index, safeData.length)}10`,
+                      border: `1px solid ${getColor(index, safeData.length)}`,
                       maxWidth: '250px'
                     }}
                   >
-                    <div className="text-xs font-medium" style={{ color: getColor(index, data.length) }}>
+                    <div className="text-xs font-medium" style={{ color: getColor(index, safeData.length) }}>
                       {point.timestamp}
                     </div>
                     <div className="text-sm font-bold mt-1">

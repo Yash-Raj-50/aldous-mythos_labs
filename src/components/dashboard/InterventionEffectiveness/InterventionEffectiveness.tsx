@@ -18,22 +18,35 @@ interface EngagementDataPoint {
 }
 
 interface InterventionEffectivenessData {
-  data: {
-    openQuestions: InterventionCategory;
-    addressingGrievances: InterventionCategory;
-    emotionalValidation: InterventionCategory;
-    alternativeNarratives: InterventionCategory;
-    directChallenges: InterventionCategory;
-    engagementTrend: {
-      dataPoints: EngagementDataPoint[];
+  data?: {
+    openQuestions?: InterventionCategory;
+    addressingGrievances?: InterventionCategory;
+    emotionalValidation?: InterventionCategory;
+    alternativeNarratives?: InterventionCategory;
+    directChallenges?: InterventionCategory;
+    engagementTrend?: {
+      dataPoints?: EngagementDataPoint[];
     };
-  }
+  } | null;
 }
 
 const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
   const [animate, setAnimate] = useState(false);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
+
+  // Provide default values if data is undefined or incomplete
+  const defaultCategory: InterventionCategory = { score: 50, assessment: "MIXED" };
+  const interventionData = {
+    openQuestions: data?.openQuestions || defaultCategory,
+    addressingGrievances: data?.addressingGrievances || defaultCategory,
+    emotionalValidation: data?.emotionalValidation || defaultCategory,
+    alternativeNarratives: data?.alternativeNarratives || defaultCategory,
+    directChallenges: data?.directChallenges || defaultCategory,
+    engagementTrend: {
+      dataPoints: data?.engagementTrend?.dataPoints || []
+    }
+  };
 
   // Determine color based on score
   const getScoreColor = (score: number) => {
@@ -51,7 +64,7 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
   }, []);
 
   useEffect(() => {
-    if (chartRef.current && data.engagementTrend.dataPoints.length > 0) {
+    if (chartRef.current && interventionData.engagementTrend.dataPoints.length > 0) {
       // Convert engagement level to numeric values for plotting
       const convertLevelToValue = (level: EngagementLevel): number => {
         switch (level) {
@@ -63,13 +76,13 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
       };
 
       // Format dates for x-axis
-      const labels = data.engagementTrend.dataPoints.map(dp => dp.timestamp);
+      const labels = interventionData.engagementTrend.dataPoints.map(dp => dp.timestamp);
 
       // Map engagement levels to numeric values for y-axis
-      const values = data.engagementTrend.dataPoints.map(dp => convertLevelToValue(dp.level));
+      const values = interventionData.engagementTrend.dataPoints.map(dp => convertLevelToValue(dp.level));
 
       // Prepare events for tooltips
-      const events = data.engagementTrend.dataPoints.map(dp => dp.event);
+      const events = interventionData.engagementTrend.dataPoints.map(dp => dp.event);
 
       // Destroy existing chart if it exists
       if (chartInstance.current) {
@@ -160,7 +173,7 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
         chartInstance.current.destroy();
       }
     };
-  }, [data.engagementTrend.dataPoints]);
+  }, [interventionData.engagementTrend.dataPoints]);
 
   return (
     <div className="col-span-2 lg:col-span-4 min-h-[600px] lg:min-h-[500px] flex flex-col items-start justify-start bg-white rounded shadow-md p-4 gap-4">
@@ -175,16 +188,16 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: animate ? `${data.openQuestions.score}%` : '0%',
-                    backgroundColor: getScoreColor(data.openQuestions.score)
+                    width: animate ? `${interventionData.openQuestions.score}%` : '0%',
+                    backgroundColor: getScoreColor(interventionData.openQuestions.score)
                   }}
                 ></div>
               </div>
             </span>
-            <span className="w-2/8">{data.openQuestions.assessment}</span>
+            <span className="w-2/8">{interventionData.openQuestions.assessment}</span>
             <span className="w-1/8 flex flex-row justify-start">
-              {data.openQuestions.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
-              {data.openQuestions.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
+              {interventionData.openQuestions.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
+              {interventionData.openQuestions.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
           </div>
           <div className="flex flex-row items-start gap-2 w-full text-sm font-medium">
@@ -194,16 +207,16 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: animate ? `${data.addressingGrievances.score}%` : '0%',
-                    backgroundColor: getScoreColor(data.addressingGrievances.score)
+                    width: animate ? `${interventionData.addressingGrievances.score}%` : '0%',
+                    backgroundColor: getScoreColor(interventionData.addressingGrievances.score)
                   }}
                 ></div>
               </div>
             </span>
-            <span className="w-2/8">{data.addressingGrievances.assessment}</span>
+            <span className="w-2/8">{interventionData.addressingGrievances.assessment}</span>
             <span className="w-1/8 flex flex-row justify-start">
-              {data.addressingGrievances.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
-              {data.addressingGrievances.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
+              {interventionData.addressingGrievances.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
+              {interventionData.addressingGrievances.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
           </div>
           <div className="flex flex-row items-start gap-2 w-full text-sm font-medium">
@@ -213,16 +226,16 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: animate ? `${data.emotionalValidation.score}%` : '0%',
-                    backgroundColor: getScoreColor(data.emotionalValidation.score)
+                    width: animate ? `${interventionData.emotionalValidation.score}%` : '0%',
+                    backgroundColor: getScoreColor(interventionData.emotionalValidation.score)
                   }}
                 ></div>
               </div>
             </span>
-            <span className="w-2/8">{data.emotionalValidation.assessment}</span>
+            <span className="w-2/8">{interventionData.emotionalValidation.assessment}</span>
             <span className="w-1/8 flex flex-row justify-start">
-              {data.emotionalValidation.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
-              {data.emotionalValidation.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
+              {interventionData.emotionalValidation.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
+              {interventionData.emotionalValidation.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
           </div>
           <div className="flex flex-row items-start gap-2 w-full text-sm font-medium">
@@ -232,16 +245,16 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: animate ? `${data.alternativeNarratives.score}%` : '0%',
-                    backgroundColor: getScoreColor(data.alternativeNarratives.score)
+                    width: animate ? `${interventionData.alternativeNarratives.score}%` : '0%',
+                    backgroundColor: getScoreColor(interventionData.alternativeNarratives.score)
                   }}
                 ></div>
               </div>
             </span>
-            <span className="w-2/8">{data.alternativeNarratives.assessment}</span>
+            <span className="w-2/8">{interventionData.alternativeNarratives.assessment}</span>
             <span className="w-1/8 flex flex-row justify-start">
-              {data.alternativeNarratives.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
-              {data.alternativeNarratives.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
+              {interventionData.alternativeNarratives.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
+              {interventionData.alternativeNarratives.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
           </div>
           <div className="flex flex-row items-start gap-2 w-full text-sm font-medium">
@@ -251,16 +264,16 @@ const InterventionEffectiveness = ({ data }: InterventionEffectivenessData) => {
                 <div
                   className="h-full rounded-full transition-all duration-1000 ease-out"
                   style={{
-                    width: animate ? `${data.directChallenges.score}%` : '0%',
-                    backgroundColor: getScoreColor(data.directChallenges.score)
+                    width: animate ? `${interventionData.directChallenges.score}%` : '0%',
+                    backgroundColor: getScoreColor(interventionData.directChallenges.score)
                   }}
                 ></div>
               </div>
             </span>
-            <span className="w-2/8">{data.directChallenges.assessment}</span>
+            <span className="w-2/8">{interventionData.directChallenges.assessment}</span>
             <span className="w-1/8 flex flex-row justify-start">
-              {data.directChallenges.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
-              {data.directChallenges.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
+              {interventionData.directChallenges.isFocus && <span className="text-blue-600 font-medium">✔️ FOCUS</span>}
+              {interventionData.directChallenges.isAvoid && <span className="text-red-600 font-medium">⚠️ AVOID</span>}
             </span>
           </div>
         </div>

@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 
 interface EmotionalIcebergAnalysisProps {
-  data: {
+  data?: {
     emotion: string;
     strength: string;
     underlyingDrivers: string[];
-  }[];
+  }[] | null;
 }
 
 const EmotionalIcebergAnalysis = ({data}:EmotionalIcebergAnalysisProps) => {
+  // Safe data access with default values
+  const safeData = data || [
+    {
+      emotion: "No analysis available",
+      strength: "LOW",
+      underlyingDrivers: ["Analysis pending - no data available yet"]
+    }
+  ];
+  
   // Track which driver is being hovered for tooltip
   const [hoveredDriver, setHoveredDriver] = useState<{index: number, subIndex: number} | null>(null);
   
@@ -50,7 +59,7 @@ const EmotionalIcebergAnalysis = ({data}:EmotionalIcebergAnalysisProps) => {
                 transform: 'translateX(-50%)'
               }}
             >
-              {data[hoveredDriver.index]?.underlyingDrivers[hoveredDriver.subIndex]}
+              {safeData[hoveredDriver.index]?.underlyingDrivers[hoveredDriver.subIndex]}
             </div>
           )}
           
@@ -59,12 +68,12 @@ const EmotionalIcebergAnalysis = ({data}:EmotionalIcebergAnalysisProps) => {
             <div 
               className="relative h-full" 
               style={{ 
-                width: data.length > 3 ? `${data.length * 200}px` : '100%',
+                width: safeData.length > 3 ? `${safeData.length * 200}px` : '100%',
                 minWidth: '100%'
               }}
             >
               {/* Icebergs */}
-              {data.map((item, index) => {
+              {safeData.map((item, index) => {
                 const color = getColor(item.strength);
                 
                 // Determine height and dimensions based on strength

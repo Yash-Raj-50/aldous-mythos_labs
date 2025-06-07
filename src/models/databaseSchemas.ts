@@ -39,6 +39,7 @@ const ProfileSchema = new Schema<Profile & Document>({
 }, { timestamps: true }); // Added timestamps for SubjectID (auto) via _id
 
 const ChatSessionSchema = new Schema<ChatSession & Document>({
+  sessionID: { type: String, unique: true, sparse: true }, // Add unique sessionID field
   subjectID: { type: Schema.Types.ObjectId, ref: 'Profile', required: true }, // Changed to ObjectId
   assignedAgentID: { type: Schema.Types.ObjectId, ref: 'Agent', required: true }, // Changed to ObjectId
   agentPlatform: { type: String }, // Optional

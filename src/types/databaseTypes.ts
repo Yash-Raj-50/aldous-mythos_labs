@@ -50,6 +50,7 @@ export interface Message {
 export interface ChatSession {
   _id?: string | Types.ObjectId; // ConversationID (auto)
   id?: string; 
+  sessionID?: string; // Unique session identifier
   subjectID: string | Types.ObjectId | Profile; // ProfileID or Profile object
   assignedAgentID: string | Types.ObjectId | Agent; // AgentID or Agent object - ensure consistency
   agentPlatform?: string; // Optional

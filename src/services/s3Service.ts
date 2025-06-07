@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 // S3 client configuration
@@ -17,6 +17,11 @@ export interface UploadResponse {
   url?: string;
   error?: string;
   publicUrl?: string;
+}
+
+export interface DeleteResponse {
+  success: boolean;
+  error?: string;
 }
 
 /**
@@ -86,6 +91,29 @@ export async function getPresignedUploadUrl(
       success: true,
       url: signedUrl,
       publicUrl,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+    };
+  }
+}
+
+/**
+ * Delete file from S3
+ */
+export async function deleteFileFromS3(key: string): Promise<DeleteResponse> {
+  try {
+    const command = new DeleteObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+    });
+
+    await s3Client.send(command);
+
+    return {
+      success: true,
     };
   } catch (error) {
     return {
