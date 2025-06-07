@@ -642,7 +642,28 @@ function validateTwilioSignature(request: NextRequest, body: string): boolean {
       return false;
     }
 
-    const url = request.url;
+    // Handle AWS Amplify URL construction
+    const host = request.headers.get('host');
+    const forwardedProto = request.headers.get('x-forwarded-proto') || 'https';
+    const originalUrl = request.headers.get('x-forwarded-uri') || '/api/twilio_webhook_whatsapp';
+    
+    let url: string;
+    if (host && !host.includes('localhost')) {
+      // For AWS Amplify deployment, construct the correct URL
+      url = `${forwardedProto}://${host}${originalUrl}`;
+    } else {
+      // For local development, use the request URL
+      url = request.url;
+    }
+    
+    console.log('Signature validation URL:', url);
+    console.log('Request headers:', {
+      host: request.headers.get('host'),
+      'x-forwarded-proto': request.headers.get('x-forwarded-proto'),
+      'x-forwarded-uri': request.headers.get('x-forwarded-uri'),
+      'x-twilio-signature': signature
+    });
+    
     const authToken = process.env.NEXT_PUBLIC_TWILIO_AUTH_TOKEN!;
     
     // Convert URLSearchParams body to object for validation
@@ -652,7 +673,10 @@ function validateTwilioSignature(request: NextRequest, body: string): boolean {
       bodyObject[key] = value;
     }
     
-    return twilio.validateRequest(authToken, signature, url, bodyObject);
+    const isValid = twilio.validateRequest(authToken, signature, url, bodyObject);
+    console.log('Signature validation result:', isValid);
+    
+    return isValid;
   } catch (error) {
     console.error('Error validating Twilio signature:', error);
     return false;
