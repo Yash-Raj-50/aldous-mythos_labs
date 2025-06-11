@@ -110,8 +110,14 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
     if (analysis) { // Check if analysis exists
       // Simplified risk logic: if analysis.summary.risk exists, use it, otherwise keep UNKNOWN
       // This needs to be adapted to your actual Analysis structure for riskLevel
-      if (analysis.completeAnalysis?.risk) { 
-        riskLevel = String(analysis.completeAnalysis.risk).toUpperCase();
+      if (analysis.completeAnalysis && 
+          typeof analysis.completeAnalysis === 'object' && 
+          analysis.completeAnalysis !== null &&
+          'executiveSummary' in analysis.completeAnalysis &&
+          typeof (analysis.completeAnalysis as any).executiveSummary === 'object' &&
+          (analysis.completeAnalysis as any).executiveSummary !== null &&
+          'riskLevel' in (analysis.completeAnalysis as any).executiveSummary) { 
+        riskLevel = String((analysis.completeAnalysis as any).executiveSummary.riskLevel).toUpperCase();
       } else {
         // Fallback or more complex logic if risk is nested differently or needs calculation
         // For now, if analysis exists but no specific risk field, it remains UNKNOWN

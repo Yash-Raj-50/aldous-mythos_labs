@@ -34,6 +34,7 @@ export interface Profile {
   socialIDs?: string[];
   analysis?: string | Types.ObjectId | Analysis;
   assignedAgentID?: string | Types.ObjectId | Agent;
+  // assignedUserID?: string | Types.ObjectId | User; // New field
   chatSessions?: (string | Types.ObjectId | ChatSession)[];
   createdAt?: Date; // Keep createdAt
   updatedAt?: Date; // Keep updatedAt

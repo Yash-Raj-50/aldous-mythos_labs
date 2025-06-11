@@ -54,6 +54,7 @@ export interface HomepageData {
     userClass: string;
     userId: string;
     profilePic?: string;
+    agents?: string[]; // Add agent IDs array
   } | null;
   userDetails: Record<string, { profilePic?: string, name: string }>;
 }
@@ -92,8 +93,32 @@ export async function fetchHomepageData(): Promise<HomepageData | null> {
     // Fetch all agents
     const agents = await agentsCollection.find({}).toArray();
     
+    // Get current user's agent IDs
+    let currentUserAgents: string[] = [];
+    if (userId) {
+      const currentUserDoc = await usersCollection.findOne({ _id: new ObjectId(userId) });
+      if (currentUserDoc?.agents) {
+        currentUserAgents = currentUserDoc.agents.map((agentId: any) => agentId.toString());
+      }
+    }
+    
     // Fetch all profiles
-    const profiles = await profilesCollection.find({}).toArray();
+    const allProfiles = await profilesCollection.find({}).toArray();
+    
+    // Filter profiles based on user's assigned agents
+    const profiles = allProfiles.filter(profile => {
+      // If user is superuser, show all profiles
+      if (userClass === 'superuser') {
+        return true;
+      }
+      
+      // For regular users, only show profiles assigned to their agents
+      if (profile.assignedAgentID) {
+        return currentUserAgents.includes(profile.assignedAgentID.toString());
+      }
+      
+      return false;
+    });
     
     // Create agents with profile counts
     const agentsWithProfileCount: AgentWithProfileCount[] = agents.map(agent => {
@@ -156,11 +181,12 @@ export async function fetchHomepageData(): Promise<HomepageData | null> {
       });
     }
     
-    // Get current user's profile pic
+    // Get current user's profile pic and agents
     let currentUserProfilePic: string | undefined;
     if (userId) {
       const currentUserDoc = await usersCollection.findOne({ _id: new ObjectId(userId) });
       currentUserProfilePic = currentUserDoc?.profilePic;
+      // currentUserAgents is already fetched above
     }
     
     const serializedProfiles = profiles.map(profile => serializeMongoObject(profile) as Profile);
@@ -174,7 +200,8 @@ export async function fetchHomepageData(): Promise<HomepageData | null> {
         username,
         userClass,
         userId,
-        profilePic: currentUserProfilePic
+        profilePic: currentUserProfilePic,
+        agents: currentUserAgents
       },
       userDetails
     };

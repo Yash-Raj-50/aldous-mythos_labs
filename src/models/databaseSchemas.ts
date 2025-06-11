@@ -35,6 +35,7 @@ const ProfileSchema = new Schema<Profile & Document>({
   socialIDs: [{ type: String }],
   analysis: { type: Schema.Types.ObjectId, ref: 'Analysis' }, // Changed to ObjectId
   assignedAgentID: { type: Schema.Types.ObjectId, ref: 'Agent' }, // New field
+  // assignedUserID: { type: Schema.Types.ObjectId, ref: 'User' }, // New field
   chatSessions: [{ type: Schema.Types.ObjectId, ref: 'ChatSession' }],
 }, { timestamps: true }); // Added timestamps for SubjectID (auto) via _id
 
