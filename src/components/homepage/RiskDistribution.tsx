@@ -53,13 +53,16 @@ const RiskDistribution = ({ profiles, analyses }: RiskDistributionProps) => {
     profiles.forEach(profile => {
       if (profile.id) {
         const analysis = analyses[profile.id];
-        if (analysis && analysis.completeAnalysis) {
-          // Example: Determine riskLevel from analysis.completeAnalysis
-          // This logic needs to be robust and match how risk is determined elsewhere
-          let riskLevel = "LOW"; // Default
-          if (analysis.completeAnalysis.someFlag === 'high') riskLevel = "HIGH";
-          else if (analysis.completeAnalysis.someFlag === 'medium-high') riskLevel = "MEDIUM-HIGH";
-          else if (analysis.completeAnalysis.someFlag === 'medium') riskLevel = "MEDIUM";
+        if (analysis && 
+            analysis.completeAnalysis && 
+            typeof analysis.completeAnalysis === 'object' && 
+            analysis.completeAnalysis !== null &&
+            'executiveSummary' in analysis.completeAnalysis &&
+            typeof (analysis.completeAnalysis as Record<string, unknown>).executiveSummary === 'object' &&
+            (analysis.completeAnalysis as Record<string, unknown>).executiveSummary !== null &&
+            'riskLevel' in ((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>)) {
+          
+          const riskLevel = String(((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>).riskLevel).toUpperCase();
           
           if (riskCounts.hasOwnProperty(riskLevel)) {
             riskCounts[riskLevel as keyof typeof riskCounts]++;
@@ -106,11 +109,16 @@ const RiskDistribution = ({ profiles, analyses }: RiskDistributionProps) => {
     profiles.forEach(profile => {
       if (profile.id) {
         const analysis = analyses[profile.id];
-        if (analysis && analysis.completeAnalysis) {
-          let riskLevel = "LOW"; // Default
-          if (analysis.completeAnalysis.someFlag === 'high') riskLevel = "HIGH";
-          else if (analysis.completeAnalysis.someFlag === 'medium-high') riskLevel = "MEDIUM-HIGH";
-          else if (analysis.completeAnalysis.someFlag === 'medium') riskLevel = "MEDIUM";
+        if (analysis && 
+            analysis.completeAnalysis && 
+            typeof analysis.completeAnalysis === 'object' && 
+            analysis.completeAnalysis !== null &&
+            'executiveSummary' in analysis.completeAnalysis &&
+            typeof (analysis.completeAnalysis as Record<string, unknown>).executiveSummary === 'object' &&
+            (analysis.completeAnalysis as Record<string, unknown>).executiveSummary !== null &&
+            'riskLevel' in ((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>)) {
+
+          const riskLevel = String(((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>).riskLevel).toUpperCase();
 
           if (counts.hasOwnProperty(riskLevel)) {
             counts[riskLevel as keyof typeof counts]++;
