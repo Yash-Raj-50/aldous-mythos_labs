@@ -54,7 +54,7 @@ export interface HomepageData {
     userClass: string;
     userId: string;
     profilePic?: string;
-    agents?: string[]; // Add agent IDs array
+    agents?: string[]; // Add agents array
   } | null;
   userDetails: Record<string, { profilePic?: string, name: string }>;
 }
@@ -98,7 +98,7 @@ export async function fetchHomepageData(): Promise<HomepageData | null> {
     if (userId) {
       const currentUserDoc = await usersCollection.findOne({ _id: new ObjectId(userId) });
       if (currentUserDoc?.agents) {
-        currentUserAgents = currentUserDoc.agents.map((agentId: any) => agentId.toString());
+        currentUserAgents = currentUserDoc.agents.map((agentId: string | ObjectId) => agentId.toString());
       }
     }
     

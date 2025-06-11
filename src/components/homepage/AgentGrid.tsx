@@ -7,9 +7,10 @@ import dummyAgentLogo from '@/assets/dummy_agent_logo.png'; // Import dummy logo
 // Use the Agent type from HomepageData
 interface AgentGridProps {
   agents: HomepageData['agents'];
+  currentUser: HomepageData['currentUser'];
 }
 
-const AgentGrid: React.FC<AgentGridProps> = ({ agents }) => {
+const AgentGrid: React.FC<AgentGridProps> = ({ agents, currentUser }) => {
   const [agentIconErrorStates, setAgentIconErrorStates] = useState<Record<string, boolean>>({});
   const [dummyIconErrorStates, setDummyIconErrorStates] = useState<Record<string, boolean>>({});
 
@@ -20,6 +21,21 @@ const AgentGrid: React.FC<AgentGridProps> = ({ agents }) => {
   const handleDummyIconError = (agentId: string) => {
     setDummyIconErrorStates(prev => ({ ...prev, [agentId]: true }));
   };
+
+  // Filter agents based on current user's assigned agents
+  const filteredAgents = agents.filter(agent => {
+    // If user is superuser, show all agents
+    if (currentUser?.userClass === 'superuser') {
+      return true;
+    }
+    
+    // For regular users, only show agents they have access to
+    if (currentUser?.agents) {
+      return currentUser.agents.includes(agent.id);
+    }
+    
+    return false;
+  });
 
   const getInitials = (name: string) => {
     if (!name) return 'AG';
@@ -50,9 +66,9 @@ const AgentGrid: React.FC<AgentGridProps> = ({ agents }) => {
   return (
     <div className="col-span-2 lg:col-span-4 bg-blue-600/15 border-4 border-[#253A5C] rounded-lg p-4 px-8 shadow-lg h-[250px]">
       <h2 className="text-xl font-bold text-black">Your Agents</h2>
-      {agents && agents.length > 0 ? (
+      {filteredAgents && filteredAgents.length > 0 ? (
         <div className="flex overflow-x-auto space-x-4 p-4 scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300">
-          {agents.map((agent) => {
+          {filteredAgents.map((agent) => {
             const agentIconHasError = agentIconErrorStates[agent.id];
             const dummyIconHasError = dummyIconErrorStates[agent.id];
 

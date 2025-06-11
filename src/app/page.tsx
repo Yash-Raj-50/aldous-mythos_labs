@@ -59,6 +59,7 @@ export default async function Home() {
               ...agent,
               activeStatus: agent.activeStatus ?? false
             }))}
+            currentUser={currentUser}
           />
           <ProfileTable
             profiles={profiles}
