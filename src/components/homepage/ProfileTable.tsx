@@ -14,12 +14,21 @@ import {
   TableSortLabel,
   Chip,
   Button,
-  Tooltip // Import Tooltip
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  IconButton,
+  Box
 } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation'; // Corrected import for useRouter
 import { useState } from "react";
 import dummyAgentLogo from '@/assets/dummy_agent_logo.png'; // Import dummy logo
 import { AgentWithProfileCount } from "@/actions/fetchHomepageData"; // Import AgentWithProfileCount
+import { deleteProfile } from "@/actions/deleteProfile"; // Import delete action
 
 // Update ProfileRowData
 interface ProfileRowData {
@@ -32,8 +41,8 @@ interface ProfileRowData {
     name: string;
     icon?: string;
   };
-  riskLevel: string; 
-  lastActive: string; 
+  riskLevel: string;
+  lastActive: string;
 }
 
 
@@ -50,7 +59,7 @@ interface ProfileTableProps {
 
 // Helper function to compare risk levels
 function getRiskLevelValue(riskLevel: string): number {
-  switch(riskLevel.toUpperCase()) { // Ensure case-insensitivity for comparison
+  switch (riskLevel.toUpperCase()) { // Ensure case-insensitivity for comparison
     case "HIGH": return 4;
     case "MEDIUM-HIGH": return 3;
     case "MEDIUM": return 2;
@@ -96,8 +105,46 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
   const [orderBy, setOrderBy] = useState<OrderBy>('riskLevel');
   const [agentIconErrorStates, setAgentIconErrorStates] = useState<Record<string, boolean>>({});
 
+  // Delete dialog states
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<ProfileRowData | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleAgentIconError = (agentId: string) => {
     setAgentIconErrorStates(prev => ({ ...prev, [agentId]: true }));
+  };
+
+  // Delete handlers
+  const handleDeleteOpen = (profile: ProfileRowData) => {
+    setSelectedProfile(profile);
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteClose = () => {
+    setOpenDeleteDialog(false);
+    setSelectedProfile(null);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedProfile) return;
+
+    setIsDeleting(true);
+    try {
+      const result = await deleteProfile(selectedProfile.id);
+      if (result.success) {
+        // Use Next.js router refresh to update the page
+        router.refresh();
+      } else {
+        console.error('Failed to delete profile:', result.error);
+        alert(`Failed to delete profile: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Error deleting profile:', error);
+      alert('An unexpected error occurred while deleting the profile. Please try again.');
+    } finally {
+      setIsDeleting(false);
+      handleDeleteClose();
+    }
   };
 
   // Transform props into ProfileRowData
@@ -105,18 +152,18 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
     const analysis = profile.id ? analyses[profile.id] : null;
     const assignedAgentId = profile.assignedAgentID?.toString();
     const assignedAgentData = assignedAgentId ? agents.find(agent => agent.id === assignedAgentId) : undefined;
-    
+
     let riskLevel = "UNKNOWN"; // Default to UNKNOWN
     if (analysis) { // Check if analysis exists
       // Simplified risk logic: if analysis.summary.risk exists, use it, otherwise keep UNKNOWN
       // This needs to be adapted to your actual Analysis structure for riskLevel
-      if (analysis.completeAnalysis && 
-          typeof analysis.completeAnalysis === 'object' && 
-          analysis.completeAnalysis !== null &&
-          'executiveSummary' in analysis.completeAnalysis &&
-          typeof (analysis.completeAnalysis as Record<string, unknown>).executiveSummary === 'object' &&
-          (analysis.completeAnalysis as Record<string, unknown>).executiveSummary !== null &&
-          'riskLevel' in ((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>)) { 
+      if (analysis.completeAnalysis &&
+        typeof analysis.completeAnalysis === 'object' &&
+        analysis.completeAnalysis !== null &&
+        'executiveSummary' in analysis.completeAnalysis &&
+        typeof (analysis.completeAnalysis as Record<string, unknown>).executiveSummary === 'object' &&
+        (analysis.completeAnalysis as Record<string, unknown>).executiveSummary !== null &&
+        'riskLevel' in ((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>)) {
         riskLevel = String(((analysis.completeAnalysis as Record<string, unknown>).executiveSummary as Record<string, unknown>).riskLevel).toUpperCase();
       } else {
         // Fallback or more complex logic if risk is nested differently or needs calculation
@@ -129,12 +176,12 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
       id: profile.id!,
       name: profile.name,
       country: profile.country,
-      assignedAgent: assignedAgentData ? { 
+      assignedAgent: assignedAgentData ? {
         id: assignedAgentData.id,
         name: assignedAgentData.name,
-        icon: assignedAgentData.icon 
+        icon: assignedAgentData.icon
       } : undefined,
-      riskLevel: riskLevel, 
+      riskLevel: riskLevel,
       lastActive: analysis?.lastUpdated ? new Date(analysis.lastUpdated).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A',
     };
   });
@@ -157,7 +204,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
   const getRiskLevelChip = (riskLevel: string) => {
     let color;
     let textColor = 'white';
-    switch(riskLevel.toUpperCase()) {
+    switch (riskLevel.toUpperCase()) {
       case "HIGH": color = "#D45F5F"; break;
       case "MEDIUM-HIGH": color = "#E05A3A"; break;
       case "MEDIUM": color = "#E69244"; break;
@@ -165,12 +212,12 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
       case "UNKNOWN": color = "#E0E0E0"; textColor = '#757575'; break; // Grey for UNKNOWN
       default: color = "#9E9E9E"; textColor = 'white'; // Default grey for other unexpected values
     }
-    
+
     return (
-      <Chip 
+      <Chip
         label={riskLevel}
-        size="small" 
-        sx={{ 
+        size="small"
+        sx={{
           bgcolor: color,
           color: textColor,
           borderRadius: '16px',
@@ -179,7 +226,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
           paddingInline: '12px',
           minWidth: '80px', // Ensure chips have a minimum width
           textTransform: 'uppercase'
-        }} 
+        }}
       />
     );
   };
@@ -198,9 +245,9 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
       <Typography variant="h6" component="h2" sx={{ fontWeight: 600, px: 4, py: 2 }}>
         Profile Overview
       </Typography>
-      
+
       <TableContainer component={Paper} elevation={0}>
-        <Table sx={{ minWidth: 750 }} aria-label="profile table"> 
+        <Table sx={{ minWidth: 750 }} aria-label="profile table">
           <TableHead sx={{ backgroundColor: '#f3f4f6' }}>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold', py: 1, textAlign: 'center', width: '15%' }}>
@@ -212,7 +259,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
                   Profile Name
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold', py: 1, textAlign: 'center', width: '15%' }}> 
+              <TableCell sx={{ fontWeight: 'bold', py: 1, textAlign: 'center', width: '15%' }}>
                 <TableSortLabel
                   active={orderBy === 'id'}
                   direction={orderBy === 'id' ? order : 'asc'}
@@ -249,7 +296,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
                 </TableSortLabel>
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', py: 1, textAlign: 'center', width: '15%' }}>
-                 <TableSortLabel
+                <TableSortLabel
                   active={orderBy === 'lastActive'}
                   direction={orderBy === 'lastActive' ? order : 'asc'}
                   onClick={() => handleRequestSort('lastActive')}
@@ -267,7 +314,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
                   <TableCell sx={{ py: 1, textAlign: 'center' }}>
                     {row.name}
                   </TableCell>
-                  <TableCell sx={{ py: 1, maxWidth: '150px', textAlign: 'center' }}> 
+                  <TableCell sx={{ py: 1, maxWidth: '150px', textAlign: 'center' }}>
                     <Tooltip title={row.id} placement="top">
                       <Typography noWrap sx={{ fontSize: '0.875rem' }}>
                         {row.id}
@@ -275,17 +322,17 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
                     </Tooltip>
                   </TableCell>
                   <TableCell sx={{ py: 1, textAlign: 'center' }}>{row.country || 'N/A'}</TableCell>
-                  <TableCell sx={{ py: 1, textAlign: 'center' }}> 
+                  <TableCell sx={{ py: 1, textAlign: 'center' }}>
                     {row.assignedAgent ? (
                       <Tooltip title={row.assignedAgent.name} placement="top">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}> {/* Centered content */}
-                          <Avatar 
+                          <Avatar
                             src={!agentIconErrorStates[row.assignedAgent.id] && row.assignedAgent.icon ? row.assignedAgent.icon : dummyAgentLogo.src}
-                            onError={() => row.assignedAgent?.id && handleAgentIconError(row.assignedAgent.id)} 
-                            sx={{ width: 32, height: 32, marginRight: 1}} 
+                            onError={() => row.assignedAgent?.id && handleAgentIconError(row.assignedAgent.id)}
+                            sx={{ width: 32, height: 32, marginRight: 1 }}
                           >
-                            { (agentIconErrorStates[row.assignedAgent.id] || !row.assignedAgent.icon) && 
-                              row.assignedAgent.name?.charAt(0).toUpperCase() }
+                            {(agentIconErrorStates[row.assignedAgent.id] || !row.assignedAgent.icon) &&
+                              row.assignedAgent.name?.charAt(0).toUpperCase()}
                           </Avatar>
                           <Typography noWrap sx={{ fontSize: '0.875rem', display: { xs: 'none', sm: 'block' } }}>
                           </Typography>
@@ -296,31 +343,53 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
                   <TableCell sx={{ py: 1, textAlign: 'center' }}>{getRiskLevelChip(row.riskLevel)}</TableCell>
                   <TableCell sx={{ py: 1, textAlign: 'center' }}>{row.lastActive}</TableCell>
                   <TableCell sx={{ py: 1, textAlign: 'center' }}>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleViewDetails(row.id)}
-                      sx={{ 
-                        bgcolor: '#253A5C',
-                        color: 'white',
-                        borderRadius: '16px',
-                        paddingInline: '18px', // Adjusted padding
-                        textTransform: 'none',
-                        fontWeight: 600,
-                        fontSize: '0.75rem', // Adjusted font size
-                        '&:hover': {
-                          bgcolor: '#3E5A8A', // Darker shade for hover
-                        }
-                      }}
-                      size="small"
-                    >
-                      View Details
-                    </Button>
+                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', alignItems: 'center' }}>
+                      <IconButton
+                        onClick={() => handleDeleteOpen(row)}
+                        sx={{
+                          bgcolor: 'white',
+                          color: '#253A5C',
+                          width: 28,
+                          height: 28,
+                          borderRadius: 'full',
+                          '&:hover': {
+                            bgcolor: '#3E5A8A',
+                            transform: 'scale(1.05)',
+                          },
+                          border: '1px solid #253A5C',
+                          transition: 'all 0.2s ease-in-out'
+                        }}
+                        size="small"
+                        title="Delete Profile"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleViewDetails(row.id)}
+                        sx={{
+                          bgcolor: '#253A5C',
+                          color: 'white',
+                          borderRadius: '16px',
+                          paddingInline: '18px', // Adjusted padding
+                          textTransform: 'none',
+                          fontWeight: 600,
+                          fontSize: '0.75rem', // Adjusted font size
+                          '&:hover': {
+                            bgcolor: '#3E5A8A', // Darker shade for hover
+                          }
+                        }}
+                        size="small"
+                      >
+                        View Details
+                      </Button>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 4 }}> 
+                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                   No profiles to display.
                 </TableCell>
               </TableRow>
@@ -328,7 +397,7 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
           </TableBody>
         </Table>
       </TableContainer>
-      
+
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
@@ -338,6 +407,90 @@ const ProfileTable = ({ profiles, analyses, agents }: ProfileTableProps) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleDeleteClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ color: '#D32F2F', fontWeight: 'bold' }}>
+          Confirm Profile Deletion
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 3 }}>
+            Are you sure you want to delete this profile? This action cannot be undone and will permanently remove:
+          </DialogContentText>
+
+          {/* Profile details section */}
+          {selectedProfile && (
+            <Box sx={{
+              bgcolor: '#f5f5f5',
+              p: 2,
+              borderRadius: 1,
+              border: '1px solid #e0e0e0'
+            }}>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Profile Information:
+              </Typography>
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: 1, rowGap: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  Name:
+                </Typography>
+                <Typography variant="body2">
+                  {selectedProfile.name}
+                </Typography>
+
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  Profile ID:
+                </Typography>
+                <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
+                  {selectedProfile.id}
+                </Typography>
+
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  Country:
+                </Typography>
+                <Typography variant="body2">
+                  {selectedProfile.country || 'N/A'}
+                </Typography>
+
+                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                  Risk Level:
+                </Typography>
+                <Typography variant="body2">
+                  {selectedProfile.riskLevel}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+
+          <DialogContentText sx={{ mt: 2, color: '#d32f2f', fontWeight: 'bold' }}>
+            This will also delete the associated analysis and the saved chats.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2 }}>
+          <Button
+            onClick={handleDeleteClose}
+            sx={{ color: '#4A5568' }}
+            disabled={isDeleting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            sx={{
+              backgroundColor: '#D32F2F',
+              '&:hover': { backgroundColor: '#B71C1C' }
+            }}
+            disabled={isDeleting}
+          >
+            {isDeleting ? 'Deleting...' : 'Delete Profile'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
