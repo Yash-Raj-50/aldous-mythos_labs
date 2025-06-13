@@ -1019,6 +1019,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check if the agent is active
+    if (!agent.activeStatus) {
+      // Agent is inactive, send the unavailable message
+      await sendWhatsAppMessage(fromNumber, 'Not Available... Talk Later');
+      
+      return new NextResponse('', {
+        status: 200,
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    }
+
     // Check if profile exists
     let profile = await ProfileModel.findOne({ phone: fromNumber });
     let isNewProfile = false;
