@@ -17,7 +17,7 @@ export interface Agent {
   aiModel: string;
   prompt: string;
   phone?: string;
-  socialID?: string; // Optional
+  socialID?: string; // Facebook Page ID
   activeStatus: boolean; // New field
   icon?: string; // New field
   assignedClients?: (string | Types.ObjectId | User)[]; // New field - Array of UserIDs or User objects
@@ -31,7 +31,7 @@ export interface Profile {
   country: string;
   phone: string;
   profilePic?: string; // Keep profilePic
-  socialIDs?: string[];
+  socialID?: string; // Single social ID field
   analysis?: string | Types.ObjectId | Analysis;
   assignedAgentID?: string | Types.ObjectId | Agent;
   // assignedUserID?: string | Types.ObjectId | User; // New field

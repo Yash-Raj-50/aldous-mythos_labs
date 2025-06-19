@@ -21,7 +21,7 @@ const AgentSchema = new Schema<Agent & Document>({
   aiModel: { type: String, required: true },
   prompt: { type: String },
   phone: { type: String },
-  socialID: { type: String },
+  socialID: { type: String }, // Facebook Page ID
   activeStatus: { type: Boolean, default: true}, // New field
   icon: { type: String }, // New field
   assignedClients: [{ type: Schema.Types.ObjectId, ref: 'User' }], // New field
@@ -32,7 +32,7 @@ const ProfileSchema = new Schema<Profile & Document>({
   name: { type: String, required: true },
   country: { type: String },
   phone: { type: String },
-  socialIDs: [{ type: String }],
+  socialID: { type: String }, // Single social ID field
   analysis: { type: Schema.Types.ObjectId, ref: 'Analysis' }, // Changed to ObjectId
   assignedAgentID: { type: Schema.Types.ObjectId, ref: 'Agent' }, // New field
   // assignedUserID: { type: Schema.Types.ObjectId, ref: 'User' }, // New field
