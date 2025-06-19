@@ -635,7 +635,7 @@ function validateFacebookSignature(request: NextRequest, body: string): boolean 
       return false;
     }
 
-    const appSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET;
+    const appSecret = process.env.FACEBOOK_APP_SECRET;
     if (!appSecret) {
       console.warn('Facebook app secret not configured');
       return false;
@@ -684,7 +684,7 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
     }
 
     // Download media using Facebook Graph API
-    const accessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
+    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
     const media = await fetch(`${mediaUrl}?access_token=${accessToken}`);
 
     if (!media.ok) {
@@ -731,7 +731,7 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
 async function sendFacebookMessage(recipientId: string, message: string): Promise<boolean> {
   try {
     // Check if Facebook credentials are configured
-    const pageAccessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
+    const pageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
     if (!pageAccessToken || pageAccessToken.includes('your_')) {
       console.warn('Facebook page access token not configured, message would be sent to:', recipientId);
       console.log('Message content:', message);
@@ -909,8 +909,19 @@ export async function GET(request: NextRequest) {
   const verifyToken = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
 
+  // Use server-side only environment variable (remove NEXT_PUBLIC_)
+  const expectedToken = process.env.FACEBOOK_VERIFY_TOKEN;
+
+  // Add better logging for debugging
+  console.log('Webhook verification attempt:', {
+    mode,
+    receivedToken: verifyToken,
+    hasExpectedToken: !!expectedToken,
+    url: request.url
+  });
+
   // Check if mode and token are valid
-  if (mode === 'subscribe' && verifyToken === process.env.NEXT_PUBLIC_FACEBOOK_VERIFY_TOKEN) {
+  if (mode === 'subscribe' && verifyToken === expectedToken) {
     console.log('Facebook webhook verified successfully');
     return new NextResponse(challenge, {
       status: 200,
@@ -918,7 +929,10 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  console.error('Facebook webhook verification failed');
+  console.error('Facebook webhook verification failed', {
+    mode,
+    tokenMatch: verifyToken === expectedToken
+  });
   return new NextResponse('Verification token mismatch', {
     status: 403,
     headers: { 'Content-Type': 'text/plain' },
