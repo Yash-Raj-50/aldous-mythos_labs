@@ -1264,15 +1264,27 @@ export async function GET(request: NextRequest) {
   // Use server-side only environment variable (remove NEXT_PUBLIC_)
   const expectedToken = process.env.FACEBOOK_VERIFY_TOKEN;
 
+  // Debug logging for CloudWatch
+  console.log('Facebook webhook verification attempt:');
+  console.log('- Mode:', mode);
+  console.log('- Received verify token:', verifyToken);
+  console.log('- Expected verify token:', expectedToken);
+  console.log('- Challenge:', challenge);
+  console.log('- Tokens match:', verifyToken === expectedToken);
+  console.log('- Expected token exists:', !!expectedToken);
+  console.log('- Received token exists:', !!verifyToken);
+
   // Check if mode and token are valid
   if (mode === 'subscribe' && verifyToken === expectedToken) {
+    console.log('Verification successful - returning challenge');
     return new NextResponse(challenge, {
       status: 200,
       headers: { 'Content-Type': 'text/plain' },
     });
   }
 
-  return new NextResponse('Verification token mismatch', {
+  console.log('Verification failed - token mismatch');
+  return new NextResponse(`Verification token mismatch, Received Token = ${verifyToken}`, {
     status: 403,
     headers: { 'Content-Type': 'text/plain' },
   });
