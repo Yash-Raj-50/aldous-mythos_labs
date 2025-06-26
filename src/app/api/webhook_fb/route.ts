@@ -635,7 +635,7 @@ function validateFacebookSignature(request: NextRequest, body: string): boolean 
       return false;
     }
 
-    const appSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET;
+    const appSecret = process.env.FACEBOOK_APP_SECRET;
     if (!appSecret) {
       console.warn('Facebook app secret not configured');
       return false;
@@ -683,14 +683,39 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
       };
     }
 
-    // Download media using Facebook Graph API
-    const accessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
-    const media = await fetch(`${mediaUrl}?access_token=${accessToken}`);
+    // Get Facebook Page Access Token
+    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    if (!accessToken) {
+      return {
+        success: false,
+        error: 'Facebook Page Access Token not configured'
+      };
+    }
+
+    // Facebook media URLs might already include access token or need special handling
+    let downloadUrl = mediaUrl;
+    
+    // If the URL doesn't already contain an access token, add it
+    if (!mediaUrl.includes('access_token=')) {
+      const separator = mediaUrl.includes('?') ? '&' : '?';
+      downloadUrl = `${mediaUrl}${separator}access_token=${accessToken}`;
+    }
+
+    console.log('Attempting to download media from:', downloadUrl.replace(accessToken, 'HIDDEN_TOKEN'));
+
+    // Download media with proper headers
+    const media = await fetch(downloadUrl, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; FacebookBot/1.0)',
+        'Accept': '*/*',
+      },
+    });
 
     if (!media.ok) {
       return {
         success: false,
-        error: 'Failed to download media from Facebook'
+        error: `Failed to download media from Facebook: ${media.status} ${media.statusText}`
       };
     }
 
@@ -722,8 +747,57 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
     console.error('Error processing media:', error);
     return {
       success: false,
-      error: 'Failed to process media'
+      error: `Failed to process media: ${error instanceof Error ? error.message : 'Unknown error'}`
     };
+  }
+}
+
+// Alternative Facebook media download function
+async function downloadFacebookMedia(mediaUrl: string): Promise<{
+  success: boolean;
+  data?: Buffer;
+  contentType?: string;
+  error?: string;
+}> {
+  try {
+    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    
+    // Method 1: Try direct download with access token
+    try {
+      const response = await fetch(`${mediaUrl}?access_token=${accessToken}`, {
+        headers: {
+          'User-Agent': 'facebookexternalhit/1.1'
+        }
+      });
+      
+      if (response.ok) {
+        const data = Buffer.from(await response.arrayBuffer());
+        const contentType = response.headers.get('content-type') || 'application/octet-stream';
+        return { success: true, data, contentType };
+      }
+    } catch (e) {
+      console.log('Method 1 failed, trying method 2');
+    }
+    
+    // Method 2: Try using Graph API to get the media
+    const graphResponse = await fetch(`https://graph.facebook.com/v18.0/${mediaUrl}?access_token=${accessToken}`);
+    if (graphResponse.ok) {
+      const mediaData = await graphResponse.json();
+      if (mediaData.url) {
+        const finalResponse = await fetch(mediaData.url);
+        if (finalResponse.ok) {
+          const data = Buffer.from(await finalResponse.arrayBuffer());
+          const contentType = finalResponse.headers.get('content-type') || 'application/octet-stream';
+          return { success: true, data, contentType };
+        }
+      }
+    }
+    
+    return { success: false, error: 'All download methods failed' };
+    
+  } catch (error) {
+    console.error('Facebook media download error:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
 
@@ -731,7 +805,7 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
 async function sendFacebookMessage(recipientId: string, message: string): Promise<boolean> {
   try {
     // Check if Facebook credentials are configured
-    const pageAccessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
+    const pageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
     if (!pageAccessToken || pageAccessToken.includes('your_')) {
       console.warn('Facebook page access token not configured, message would be sent to:', recipientId);
       console.log('Message content:', message);
@@ -801,14 +875,278 @@ function shouldCreateNewSession(lastMessageTime: Date): boolean {
   return hoursDiff > SESSION_TIMEOUT_HOURS;
 }
 
-// Create a new profile for Facebook user
-async function createNewProfile(facebookId: string, name: string): Promise<Profile> {
+// Fetch user information from Facebook Graph API
+async function fetchFacebookUserInfo(facebookId: string): Promise<{
+  name: string;
+  locale?: string;
+  timezone?: number;
+}> {
+  try {
+    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    if (!accessToken) {
+      return { name: 'Facebook User' };
+    }
+
+    // Fetch user information from Facebook Graph API
+    const userInfoUrl = `https://graph.facebook.com/v18.0/${facebookId}?fields=first_name,last_name,locale,timezone&access_token=${accessToken}`;
+    
+    const response = await fetch(userInfoUrl);
+    
+    if (!response.ok) {
+      return { name: 'Facebook User' };
+    }
+
+    const userData = await response.json();
+
+    // Construct full name
+    const firstName = userData.first_name || '';
+    const lastName = userData.last_name || '';
+    const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Facebook User';
+
+    return {
+      name: fullName,
+      locale: userData.locale,
+      timezone: userData.timezone
+    };
+
+  } catch (error) {
+    console.error('Error fetching Facebook user info:', error);
+    return { name: 'Facebook User' };
+  }
+}
+
+// Extract country from Facebook locale
+function extractCountryFromLocale(locale?: string): string {
+  if (!locale) return 'Unknown';
+  
+  // Facebook locale format is usually language_COUNTRY (e.g., en_US, fr_FR, es_MX)
+  const parts = locale.split('_');
+  if (parts.length === 2) {
+    const countryCode = parts[1];
+    
+    // Map common country codes to country names
+    const countryMap: { [key: string]: string } = {
+      // North America
+      'US': 'United States',
+      'CA': 'Canada',
+      'MX': 'Mexico',
+      'GT': 'Guatemala',
+      'BZ': 'Belize',
+      'SV': 'El Salvador',
+      'HN': 'Honduras',
+      'NI': 'Nicaragua',
+      'CR': 'Costa Rica',
+      'PA': 'Panama',
+      'CU': 'Cuba',
+      'JM': 'Jamaica',
+      'HT': 'Haiti',
+      'DO': 'Dominican Republic',
+      'PR': 'Puerto Rico',
+      'TT': 'Trinidad and Tobago',
+      'BB': 'Barbados',
+      
+      // South America
+      'BR': 'Brazil',
+      'AR': 'Argentina',
+      'CL': 'Chile',
+      'PE': 'Peru',
+      'CO': 'Colombia',
+      'VE': 'Venezuela',
+      'EC': 'Ecuador',
+      'BO': 'Bolivia',
+      'PY': 'Paraguay',
+      'UY': 'Uruguay',
+      'GY': 'Guyana',
+      'SR': 'Suriname',
+      'GF': 'French Guiana',
+      
+      // Europe
+      'GB': 'United Kingdom',
+      'IE': 'Ireland',
+      'FR': 'France',
+      'ES': 'Spain',
+      'PT': 'Portugal',
+      'IT': 'Italy',
+      'DE': 'Germany',
+      'AT': 'Austria',
+      'CH': 'Switzerland',
+      'NL': 'Netherlands',
+      'BE': 'Belgium',
+      'LU': 'Luxembourg',
+      'DK': 'Denmark',
+      'SE': 'Sweden',
+      'NO': 'Norway',
+      'FI': 'Finland',
+      'IS': 'Iceland',
+      'PL': 'Poland',
+      'CZ': 'Czech Republic',
+      'SK': 'Slovakia',
+      'HU': 'Hungary',
+      'RO': 'Romania',
+      'BG': 'Bulgaria',
+      'GR': 'Greece',
+      'CY': 'Cyprus',
+      'MT': 'Malta',
+      'HR': 'Croatia',
+      'SI': 'Slovenia',
+      'BA': 'Bosnia and Herzegovina',
+      'RS': 'Serbia',
+      'ME': 'Montenegro',
+      'MK': 'North Macedonia',
+      'AL': 'Albania',
+      'EE': 'Estonia',
+      'LV': 'Latvia',
+      'LT': 'Lithuania',
+      'BY': 'Belarus',
+      'UA': 'Ukraine',
+      'MD': 'Moldova',
+      'RU': 'Russia',
+      
+      // Asia
+      'CN': 'China',
+      'JP': 'Japan',
+      'KR': 'South Korea',
+      'KP': 'North Korea',
+      'MN': 'Mongolia',
+      'IN': 'India',
+      'PK': 'Pakistan',
+      'BD': 'Bangladesh',
+      'LK': 'Sri Lanka',
+      'NP': 'Nepal',
+      'BT': 'Bhutan',
+      'MV': 'Maldives',
+      'MM': 'Myanmar',
+      'TH': 'Thailand',
+      'VN': 'Vietnam',
+      'LA': 'Laos',
+      'KH': 'Cambodia',
+      'MY': 'Malaysia',
+      'SG': 'Singapore',
+      'ID': 'Indonesia',
+      'PH': 'Philippines',
+      'BN': 'Brunei',
+      'TL': 'East Timor',
+      'AF': 'Afghanistan',
+      'IR': 'Iran',
+      'IQ': 'Iraq',
+      'SA': 'Saudi Arabia',
+      'AE': 'United Arab Emirates',
+      'QA': 'Qatar',
+      'BH': 'Bahrain',
+      'KW': 'Kuwait',
+      'OM': 'Oman',
+      'YE': 'Yemen',
+      'JO': 'Jordan',
+      'SY': 'Syria',
+      'LB': 'Lebanon',
+      'IL': 'Israel',
+      'PS': 'Palestine',
+      'TR': 'Turkey',
+      'GE': 'Georgia',
+      'AM': 'Armenia',
+      'AZ': 'Azerbaijan',
+      'KZ': 'Kazakhstan',
+      'UZ': 'Uzbekistan',
+      'TM': 'Turkmenistan',
+      'KG': 'Kyrgyzstan',
+      'TJ': 'Tajikistan',
+      
+      // Africa
+      'EG': 'Egypt',
+      'LY': 'Libya',
+      'TN': 'Tunisia',
+      'DZ': 'Algeria',
+      'MA': 'Morocco',
+      'SD': 'Sudan',
+      'SS': 'South Sudan',
+      'ET': 'Ethiopia',
+      'ER': 'Eritrea',
+      'DJ': 'Djibouti',
+      'SO': 'Somalia',
+      'KE': 'Kenya',
+      'UG': 'Uganda',
+      'TZ': 'Tanzania',
+      'RW': 'Rwanda',
+      'BI': 'Burundi',
+      'ZA': 'South Africa',
+      'NA': 'Namibia',
+      'BW': 'Botswana',
+      'ZW': 'Zimbabwe',
+      'ZM': 'Zambia',
+      'MW': 'Malawi',
+      'MZ': 'Mozambique',
+      'SZ': 'Eswatini',
+      'LS': 'Lesotho',
+      'MG': 'Madagascar',
+      'MU': 'Mauritius',
+      'SC': 'Seychelles',
+      'AO': 'Angola',
+      'CD': 'Democratic Republic of Congo',
+      'CG': 'Republic of Congo',
+      'CF': 'Central African Republic',
+      'TD': 'Chad',
+      'CM': 'Cameroon',
+      'GQ': 'Equatorial Guinea',
+      'GA': 'Gabon',
+      'ST': 'São Tomé and Príncipe',
+      'NG': 'Nigeria',
+      'NE': 'Niger',
+      'BF': 'Burkina Faso',
+      'ML': 'Mali',
+      'SN': 'Senegal',
+      'MR': 'Mauritania',
+      'GN': 'Guinea',
+      'GW': 'Guinea-Bissau',
+      'SL': 'Sierra Leone',
+      'LR': 'Liberia',
+      'CI': 'Ivory Coast',
+      'GH': 'Ghana',
+      'TG': 'Togo',
+      'BJ': 'Benin',
+      
+      // Oceania
+      'AU': 'Australia',
+      'NZ': 'New Zealand',
+      'PG': 'Papua New Guinea',
+      'FJ': 'Fiji',
+      'SB': 'Solomon Islands',
+      'VU': 'Vanuatu',
+      'NC': 'New Caledonia',
+      'PF': 'French Polynesia',
+      'WS': 'Samoa',
+      'TO': 'Tonga',
+      'KI': 'Kiribati',
+      'TV': 'Tuvalu',
+      'NR': 'Nauru',
+      'PW': 'Palau',
+      'FM': 'Micronesia',
+      'MH': 'Marshall Islands'
+    };
+    
+    return countryMap[countryCode] || countryCode;
+  }
+  
+  return 'Unknown';
+}
+
+// Create a new profile for Facebook user with enhanced user information
+async function createNewProfile(facebookId: string, fallbackName: string = 'Facebook User'): Promise<Profile> {
+  // Fetch user information from Facebook
+  const userInfo = await fetchFacebookUserInfo(facebookId);
+  const country = extractCountryFromLocale(userInfo.locale);
+
   const newProfile = new ProfileModel({
-    name: name || 'Facebook User',
+    name: userInfo.name || fallbackName,
     phone: `facebook:${facebookId}`, // Use Facebook ID as identifier
-    country: 'Unknown', // Facebook doesn't provide country info directly
+    country: country,
     socialID: facebookId, // Store Facebook ID in single socialID field
     chatSessions: [],
+    metadata: {
+      facebookLocale: userInfo.locale,
+      facebookTimezone: userInfo.timezone,
+      createdAt: new Date(),
+      platform: 'Facebook Messenger'
+    }
   });
   
   return await newProfile.save();
@@ -902,6 +1240,20 @@ async function updateChatSession(
   );
 }
 
+// Message deduplication cache to prevent processing the same message multiple times
+const processedMessages = new Set<string>();
+
+// Rate limiting - track recent messages per user
+const userMessageTimestamps = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW = 5000; // 5 seconds
+const MAX_MESSAGES_PER_WINDOW = 3;
+
+// Clean up old processed messages every 10 minutes
+setInterval(() => {
+  processedMessages.clear();
+  userMessageTimestamps.clear();
+}, 10 * 60 * 1000);
+
 // Facebook webhook verification (GET request)
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -910,29 +1262,16 @@ export async function GET(request: NextRequest) {
   const challenge = searchParams.get('hub.challenge');
 
   // Use server-side only environment variable (remove NEXT_PUBLIC_)
-  const expectedToken = process.env.NEXT_PUBLIC_FACEBOOK_VERIFY_TOKEN;
-
-  // Add better logging for debugging
-  console.log('Webhook verification attempt:', {
-    mode,
-    receivedToken: verifyToken,
-    hasExpectedToken: !!expectedToken,
-    url: request.url
-  });
+  const expectedToken = process.env.FACEBOOK_VERIFY_TOKEN;
 
   // Check if mode and token are valid
   if (mode === 'subscribe' && verifyToken === expectedToken) {
-    console.log('Facebook webhook verified successfully');
     return new NextResponse(challenge, {
       status: 200,
       headers: { 'Content-Type': 'text/plain' },
     });
   }
 
-  console.error('Facebook webhook verification failed', {
-    mode,
-    tokenMatch: verifyToken === expectedToken
-  });
   return new NextResponse('Verification token mismatch', {
     status: 403,
     headers: { 'Content-Type': 'text/plain' },
@@ -981,7 +1320,35 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Process each entry in the payload
+    // Process messages synchronously but with improved deduplication
+    await processWebhookMessages(payload);
+
+    // Return success response
+    return new NextResponse('EVENT_RECEIVED', {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain' },
+    });
+
+  } catch (error: unknown) {
+    console.error('Error processing Facebook webhook:', error);
+
+    // Try to send error message to user if possible
+    if (payload && payload.entry && payload.entry.length > 0 && payload.entry[0].messaging && payload.entry[0].messaging.length > 0) {
+      const senderId = payload.entry[0].messaging[0].sender.id;
+      await sendFacebookMessage(senderId, getRandomResponse(GENERAL_ERROR_RESPONSES));
+    }
+    
+    // Return error response
+    return new NextResponse('Internal Server Error', {
+      status: 500,
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
+}
+
+// Process webhook messages
+async function processWebhookMessages(payload: FacebookWebhookPayload) {
+  try {
     for (const entry of payload.entry || []) {
       const pageId = entry.id; // This is the Facebook Page ID
       
@@ -993,8 +1360,27 @@ export async function POST(request: NextRequest) {
         
         if (!messageData) continue; // Skip non-message events
 
+        // Check if this message has already been processed (deduplication)
+        const messageId = messageData.mid;
+        if (processedMessages.has(messageId)) {
+          continue;
+        }
+        processedMessages.add(messageId);
+
+        // Rate limiting check
+        const now = Date.now();
+        const userTimestamps = userMessageTimestamps.get(senderId) || [];
+        const recentMessages = userTimestamps.filter(timestamp => now - timestamp < RATE_LIMIT_WINDOW);
+        
+        if (recentMessages.length >= MAX_MESSAGES_PER_WINDOW) {
+          continue;
+        }
+        
+        // Update user timestamps
+        recentMessages.push(now);
+        userMessageTimestamps.set(senderId, recentMessages);
+
         // Find the agent by Facebook Page ID using socialID field
-        // First try direct match
         let agent = await AgentModel.findOne({ socialID: pageId });
         
         if (!agent) {
@@ -1020,7 +1406,6 @@ export async function POST(request: NextRequest) {
         }
         
         if (!agent) {
-          console.warn(`No agent found for Facebook Page ID: ${pageId}`);
           continue;
         }
 
@@ -1073,7 +1458,6 @@ export async function POST(request: NextRequest) {
                   messageContent = `[${attachment.type} file shared]`;
                 }
               } else {
-                console.error('Failed to process media:', mediaResult.error);
                 await sendFacebookMessage(senderId, getRandomResponse(MEDIA_ERROR_RESPONSES));
                 continue;
               }
@@ -1221,25 +1605,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return success response
-    return new NextResponse('EVENT_RECEIVED', {
-      status: 200,
-      headers: { 'Content-Type': 'text/plain' },
-    });
-
   } catch (error: unknown) {
     console.error('Error processing Facebook webhook:', error);
-
-    // Try to send error message to user if possible
-    if (payload && payload.entry && payload.entry.length > 0 && payload.entry[0].messaging && payload.entry[0].messaging.length > 0) {
-      const senderId = payload.entry[0].messaging[0].sender.id;
-      await sendFacebookMessage(senderId, getRandomResponse(GENERAL_ERROR_RESPONSES));
-    }
-    
-    // Return error response
-    return new NextResponse('Internal Server Error', {
-      status: 500,
-      headers: { 'Content-Type': 'text/plain' },
-    });
   }
 }

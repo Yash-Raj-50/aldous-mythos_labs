@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
     '/images', 
     '/api/auth',
     '/api/twilio_webhook_whatsapp',
-    '/api/twilio_webhook_fb',
+    '/api/webhook_fb',
     '/favicon.ico'
   ].some(path => pathname.startsWith(path));
 
