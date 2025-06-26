@@ -77,7 +77,7 @@ const nextConfig: NextConfig = {
   // Suppress compiler warnings (works with both webpack and turbopack)
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
-      exclude: ['error']
+      exclude: ['error', 'warn', 'log'] // Keep all console methods for debugging
     } : false,
   },
   
