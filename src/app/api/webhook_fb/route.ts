@@ -753,53 +753,53 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
 }
 
 // Alternative Facebook media download function
-async function downloadFacebookMedia(mediaUrl: string): Promise<{
-  success: boolean;
-  data?: Buffer;
-  contentType?: string;
-  error?: string;
-}> {
-  try {
-    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+// async function downloadFacebookMedia(mediaUrl: string): Promise<{
+//   success: boolean;
+//   data?: Buffer;
+//   contentType?: string;
+//   error?: string;
+// }> {
+//   try {
+//     const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
     
-    // Method 1: Try direct download with access token
-    try {
-      const response = await fetch(`${mediaUrl}?access_token=${accessToken}`, {
-        headers: {
-          'User-Agent': 'facebookexternalhit/1.1'
-        }
-      });
+//     // Method 1: Try direct download with access token
+//     try {
+//       const response = await fetch(`${mediaUrl}?access_token=${accessToken}`, {
+//         headers: {
+//           'User-Agent': 'facebookexternalhit/1.1'
+//         }
+//       });
       
-      if (response.ok) {
-        const data = Buffer.from(await response.arrayBuffer());
-        const contentType = response.headers.get('content-type') || 'application/octet-stream';
-        return { success: true, data, contentType };
-      }
-    } catch (e) {
-      console.log('Method 1 failed, trying method 2');
-    }
+//       if (response.ok) {
+//         const data = Buffer.from(await response.arrayBuffer());
+//         const contentType = response.headers.get('content-type') || 'application/octet-stream';
+//         return { success: true, data, contentType };
+//       }
+//     } catch (e) {
+//       console.log('Method 1 failed, trying method 2', e);
+//     }
     
-    // Method 2: Try using Graph API to get the media
-    const graphResponse = await fetch(`https://graph.facebook.com/v18.0/${mediaUrl}?access_token=${accessToken}`);
-    if (graphResponse.ok) {
-      const mediaData = await graphResponse.json();
-      if (mediaData.url) {
-        const finalResponse = await fetch(mediaData.url);
-        if (finalResponse.ok) {
-          const data = Buffer.from(await finalResponse.arrayBuffer());
-          const contentType = finalResponse.headers.get('content-type') || 'application/octet-stream';
-          return { success: true, data, contentType };
-        }
-      }
-    }
+//     // Method 2: Try using Graph API to get the media
+//     const graphResponse = await fetch(`https://graph.facebook.com/v18.0/${mediaUrl}?access_token=${accessToken}`);
+//     if (graphResponse.ok) {
+//       const mediaData = await graphResponse.json();
+//       if (mediaData.url) {
+//         const finalResponse = await fetch(mediaData.url);
+//         if (finalResponse.ok) {
+//           const data = Buffer.from(await finalResponse.arrayBuffer());
+//           const contentType = finalResponse.headers.get('content-type') || 'application/octet-stream';
+//           return { success: true, data, contentType };
+//         }
+//       }
+//     }
     
-    return { success: false, error: 'All download methods failed' };
+//     return { success: false, error: 'All download methods failed' };
     
-  } catch (error) {
-    console.error('Facebook media download error:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
-  }
-}
+//   } catch (error) {
+//     console.error('Facebook media download error:', error);
+//     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+//   }
+// }
 
 // Send Facebook Messenger message
 async function sendFacebookMessage(recipientId: string, message: string): Promise<boolean> {
