@@ -635,7 +635,7 @@ function validateFacebookSignature(request: NextRequest, body: string): boolean 
       return false;
     }
 
-    const appSecret = process.env.FACEBOOK_APP_SECRET;
+    const appSecret = process.env.NEXT_PUBLIC_FACEBOOK_APP_SECRET;
     if (!appSecret) {
       console.warn('Facebook app secret not configured');
       return false;
@@ -684,7 +684,7 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
     }
 
     // Get Facebook Page Access Token
-    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    const accessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
     if (!accessToken) {
       return {
         success: false,
@@ -805,7 +805,7 @@ async function processMediaMessage(mediaUrl: string, contentType: string): Promi
 async function sendFacebookMessage(recipientId: string, message: string): Promise<boolean> {
   try {
     // Check if Facebook credentials are configured
-    const pageAccessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    const pageAccessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
     if (!pageAccessToken || pageAccessToken.includes('your_')) {
       console.warn('Facebook page access token not configured, message would be sent to:', recipientId);
       console.log('Message content:', message);
@@ -882,7 +882,7 @@ async function fetchFacebookUserInfo(facebookId: string): Promise<{
   timezone?: number;
 }> {
   try {
-    const accessToken = process.env.FACEBOOK_PAGE_ACCESS_TOKEN;
+    const accessToken = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ACCESS_TOKEN;
     if (!accessToken) {
       return { name: 'Facebook User' };
     }
@@ -1262,7 +1262,7 @@ export async function GET(request: NextRequest) {
   const challenge = searchParams.get('hub.challenge');
 
   // Use server-side only environment variable (remove NEXT_PUBLIC_)
-  const expectedToken = process.env.FACEBOOK_VERIFY_TOKEN;
+  const expectedToken = process.env.NEXT_PUBLIC_FACEBOOK_VERIFY_TOKEN;
   // Debug logging for CloudWatch (using console.error to ensure visibility)
   console.log('Facebook webhook verification attempt:');
   console.log('- Mode:', mode);
