@@ -1262,7 +1262,8 @@ export async function GET(request: NextRequest) {
   const challenge = searchParams.get('hub.challenge');
 
   // Use server-side only environment variable (remove NEXT_PUBLIC_)
-  const expectedToken = process.env.FACEBOOK_VERIFY_TOKENlog  // Debug logging for CloudWatch (using console.error to ensure visibility)
+  const expectedToken = process.env.FACEBOOK_VERIFY_TOKEN;
+  // Debug logging for CloudWatch (using console.error to ensure visibility)
   console.log('Facebook webhook verification attempt:');
   console.log('- Mode:', mode);
   console.log('- Received verify token:', verifyToken);
