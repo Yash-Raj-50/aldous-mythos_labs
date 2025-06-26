@@ -80,7 +80,7 @@ const AgentManagement: React.FC = () => {
     }
     // Contact: phone or socialID
     if (!data.phone && !data.socialID) {
-      setError("At least one contact method (phone or social ID) is required.");
+      setError("At least one contact method (phone or Facebook Page ID) is required.");
       return false;
     }
     // Phone format validation if provided
@@ -299,7 +299,7 @@ const AgentManagement: React.FC = () => {
               <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Name</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>AI Model</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Phone</TableCell>
-              <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Social ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Facebook Page ID</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Status</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#2D3748' }}>Actions</TableCell>
             </TableRow>
@@ -426,7 +426,7 @@ const AgentManagement: React.FC = () => {
                   {PHONE_OPTIONS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
                 </Select>
               </FormControl>
-              <TextField label="Social ID" name="socialID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
+              <TextField label="Facebook Page ID" name="facebookPageID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
             </Box>
           </Box>
           {/* Lower: Prompt with expand */}
@@ -533,7 +533,7 @@ const AgentManagement: React.FC = () => {
                   {PHONE_OPTIONS.map(p => <MenuItem key={p.value} value={p.value}>{p.label}</MenuItem>)}
                 </Select>
               </FormControl>
-              <TextField label="Social ID" name="socialID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
+              <TextField label="Facebook Page ID" name="facebookPageID" value={newAgentData.socialID || ''} onChange={handleInputChange} fullWidth margin="none" helperText="Required if Phone is not provided" />
             </Box>
           </Box>
           {/* Lower: Prompt with expand */}

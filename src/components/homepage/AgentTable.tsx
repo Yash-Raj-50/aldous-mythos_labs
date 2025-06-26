@@ -119,7 +119,7 @@ const AgentTable: React.FC<AgentTableProps> = ({ agents }) => {
                   Agent
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }} align="center">Social ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }} align="center">Facebook Page ID</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }} align="center">
                 <TableSortLabel
                   active={orderBy === 'profileCount'}
