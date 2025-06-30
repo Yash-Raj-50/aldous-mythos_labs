@@ -105,9 +105,9 @@ Visit [http://localhost:3000](http://localhost:3000) to view the app.
 ---
 
 ## 🚧 Future Updates
-- Real-time dashboard (WebSockets)
-- More messaging platforms (Slack, Telegram)
-- Enhanced admin panel
+- Use of Bedrock for 'Update Analysis' Feature
+- First time login update password for new Clients
+- Enhanced admin panel to commission new agents for the application
 - More advanced AI integrations
 
 ---
